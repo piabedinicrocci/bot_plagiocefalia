@@ -38,10 +38,10 @@ class ActionVisitoEspecialista(Action):
          #rta= next(tracker.get_latest_entity_values("visito_especialista"),None)
          rta= tracker.latest_message['intent']['name']
          if str(rta) == 'afirmacion':
-            message="Entiendo. ¿Y residis en el AMBA?"
+            message="Entiendo. ¿Con que neurocirujano te atendiste?"
             dispatcher.utter_message(text=str(message))
             return [SlotSet("visito_especialista",True)]
          elif str(rta) == 'negacion':
-            message="Entiendo. ¿Con que neurocirujano te atendiste?"
+            message="Entiendo. ¿Y residis en el AMBA?"
             dispatcher.utter_message(text=str(message))
             return [SlotSet("visito_especialista",False)]

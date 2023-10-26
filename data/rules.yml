@@ -6,3 +6,8 @@ rules:
   steps:
   - intent: fin
   - action: utter_fin
+
+- rule: Say something anytime that the user's message is not understood
+  steps:
+  - intent: nlu_fallback
+  - action: utter_desconocido

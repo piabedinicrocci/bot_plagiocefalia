@@ -1,91 +1,62 @@
 version: "3.1"
 
 nlu:
-- intent: greet
+- intent: inicio
   examples: |
-    - hey
-    - hello
-    - hi
-    - hello there
-    - good morning
-    - good evening
-    - moin
-    - hey there
-    - let's go
-    - hey dude
-    - goodmorning
-    - goodevening
-    - good afternoon
+    - hola
+    - holis
+    - buenas
+    - buenasss
+    - buenos dias
+    - buenas tardes
+    - buenas noches
+    - necesito ayuda
+    - me brindas informacion?
+    - necesito informacion
+    - ayuda
+    - ayuda urgente
+    - por favor ayuda
 
-- intent: goodbye
+
+- intent: fin
   examples: |
-    - cu
-    - good by
-    - cee you later
-    - good night
-    - bye
-    - goodbye
-    - have a nice day
-    - see you around
-    - bye bye
-    - see you later
+    - chau
+    - nos vemos
+    - hasta luego!
+    - adios
+    - seguimos luego
+    - chauuu
+    - gracias
+    - listo
 
-- intent: affirm
+- intent: afirmacion
   examples: |
-    - yes
-    - y
-    - indeed
-    - of course
-    - that sounds good
-    - correct
+    - si
+    - sip
+    - exacto
+    - claro
+    - si!
+    - es correcto
 
-- intent: deny
+- intent: negacion
   examples: |
     - no
-    - n
-    - never
-    - I don't think so
-    - don't like that
-    - no way
-    - not really
+    - nop
+    - es incorrecto
+    - en realidad no
+    - no lo creo
+    - no hay manera
+    - no realmente
 
-- intent: mood_great
+- intent: nombre_responsable
   examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
+    - mi nombre es [pia](nombre)
+    - me llamo [martino ferrero](nombre)
+    - [matias fernandez](nombre)
+    - soy [pablo molina](nombre)
+    - soy [belen](nombre)
 
-- intent: mood_unhappy
-  examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
-
-- intent: bot_challenge
-  examples: |
-    - are you a bot?
-    - are you a human?
-    - am I talking to a bot?
-    - am I talking to a human?
+#acepta espacios y comas
+# - regex: nombre
+#   examples: |
+#     - ^[a-zA-Z\s]+$

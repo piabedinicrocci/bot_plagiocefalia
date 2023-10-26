@@ -1,33 +1,57 @@
 version: "3.1"
 
 intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
+  - inicio
+  - fin
+  - afirmacion
+  - negacion
+  - nombre_responsable
+
+entities:
+  - nombre
+  - visito_especialista
+
+actions:
+  - action_visito_especialista
+
+slots:
+  nombre:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: nombre
+  visito_especialista:
+    type: bool
+    initial_value: False
+    mappings:
+      - type: custom
 
 responses:
-  utter_greet:
-  - text: "Hey! How are you?"
+  utter_inicio:
+  - text: "¡Hola! 🤗
+          \nSoy Plagio Bot de Plagiocefalia Argentina. y hoy estaré para asistirte. 
+          \nEn nuestra clínica atendemos las asimetrías craneales posturales en todas sus fases en bebés hasta los 18 meses.
+          \nTe dejo dos videos para que conozcas sobre Plagiocefalia!
+          \n⏯️ https://youtu.be/XzTgTgPC7Xw
+          \n⏯️ https://youtu.be/Oh0TF_ze-hI"
 
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+  utter_pregunta_nombre_responsable:
+  - text: "¿Como te llamas?"
+  - text: "¿Como es tu nombre?"
 
-  utter_did_that_help:
-  - text: "Did that help you?"
+  utter_pregunta_especialista_visitado:
+  - text: "Bienvenid@ {nombre}!​ ¿Ya has visitado un especialista craneal?"
 
-  utter_happy:
-  - text: "Great, carry on!"
+  utter_bifurcacion_especialista_visitado:
+    - condition:
+        - type: slot
+          name: visito_especialista
+          value: false
+      text: "Entiendo. ¿Y residis en el AMBA?"
+    - text: "Entiendo. ¿Con que neurocirujano te atendiste?"
 
-  utter_goodbye:
-  - text: "Bye"
-
-  utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
+  utter_fin:
+  - text: "Hasta luego {nombre}!​👋​ Cualquier consulta estamos para ayudarte"
 
 session_config:
   session_expiration_time: 60

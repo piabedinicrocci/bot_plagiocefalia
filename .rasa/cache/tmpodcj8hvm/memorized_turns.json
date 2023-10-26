@@ -1,0 +1,10 @@
+{
+  "lookup": {
+    "eJyLrq6NBQAEOAGx": "action_listen",
+    "eJyLrq7VUaguKEoti09MLsnMz7NSqIYw4vMSc1OtFKCcnMziktQ8oNrS4tQioJrMPCC3xEohMy8zOTO/tjYWAAWgG+k=": "utter_inicio",
+    "eJyLrq7VUaguKEoti09MLsnMz7NSqIYw4vMSc1OtFKCcnMziktQ8oNrS4tQioJrMPCC3xEohMy8zOTO/loAhpSUlqUXxULU4zYgFAOPKNcM=": "utter_pregunta_nombre_responsable",
+    "eJylzMEJwCAMheFVHKATuEopQSWUgEaJsRdx9wr1Wnro7T34+Pc+NtOL4AUuKGW2pj8D2CW0Zp1IVZGnbRVlGuJ51RpiCpTHR6SposCyvxoTnI3VAefkBUGwlszV+Yjv4eMGo5lYZw==": "action_listen",
+    "eJylj0EKwzAMBL+iB4TSXv0VY4wTRBE4crDkXoz/XkESCqVQaG9aGGZXvo8J+lbxEdOiVNhB34/IaUUHR8gkimxsE6zGEFtUB8S0UBlfJE0VazzYvxwG3BtrilzWuWKsKFthSXPGX8XvH0ouKgbtDQ787XINL7mZSQmN8DsRJjgLP4wa4QkkO4bh": "utter_pregunta_especialista_visitado",
+    "eJytj90KwjAMRl+lDzBEb/sqY5SsBgl06WjS3Yy9u5FOBBHEn7t8cHLypV+3zq1zwSVAVMrs3dqGwDChd3tIJIpsbBUsxhBbVO+IKVLe3kiqKpawsz85DLhUVgicp7FgKChzZoEx4bfi5w8lZRWD2gXv+tPhODzkZiYlNKJvxNC5+8EXpT77yhYxEty6QFhISOGc/99puAKAUr8A": "action_listen"
+  }
+}

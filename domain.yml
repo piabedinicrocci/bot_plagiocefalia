@@ -6,13 +6,19 @@ intents:
   - afirmacion
   - negacion
   - nombre_responsable
+  - nombre_neurocirujano
+  - edad_bebe
 
 entities:
   - nombre
   - visito_especialista
+  - nombre_n
+  - mes_bebe
 
 actions:
   - action_visito_especialista
+  - action_finalizar_comunicacion
+  - action_edad_bebe
 
 slots:
   nombre:
@@ -25,6 +31,16 @@ slots:
     initial_value: False
     mappings:
       - type: custom
+  nombre_n:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: nombre_n
+  mes_bebe:
+    type: float
+    mappings:
+      - type: from_entity
+        entity: mes_bebe
 
 responses:
   utter_inicio:
@@ -32,8 +48,8 @@ responses:
           \nSoy Plagio Bot de Plagiocefalia Argentina. y hoy estaré para asistirte. 
           \nEn nuestra clínica atendemos las asimetrías craneales posturales en todas sus fases en bebés hasta los 18 meses.
           \nTe dejo dos videos para que conozcas sobre Plagiocefalia!
-          \n⏯️ https://youtu.be/XzTgTgPC7Xw
-          \n⏯️ https://youtu.be/Oh0TF_ze-hI"
+          \n⏯️  https://youtu.be/XzTgTgPC7Xw
+          \n⏯️  https://youtu.be/Oh0TF_ze-hI"
 
   utter_pregunta_nombre_responsable:
   - text: "¿Como te llamas?"
@@ -49,6 +65,15 @@ responses:
           value: false
       text: "Entiendo. ¿Y residis en el AMBA?"
     - text: "Entiendo. ¿Con que neurocirujano te atendiste?"
+
+  utter_fotos_orden:
+  - text: "Buenisimo! Ahora te pido que me envies las fotos de la orden y los papeles de la consulta"
+
+  utter_no_reside_amba:
+  - text: "Solamente atendemos presencial en el AMBA, por lo que si se te dificulta acercarte envianos tu audio explicando tu situación y un operador te atenderá a la brevedad"
+
+  utter_meses_bebe:
+  - text: "Y decime, cuantos meses tiene tu bebe?"
 
   utter_fin:
   - text: "Hasta luego {nombre}!​👋​ Cualquier consulta estamos para ayudarte"

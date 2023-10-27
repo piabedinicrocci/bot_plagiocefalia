@@ -56,6 +56,25 @@ nlu:
     - soy [pablo molina](nombre)
     - soy [belen](nombre)
 
+- intent: nombre_neurocirujano
+  examples: |
+    - su nombre es dr [juan](nombre_n)
+    - me atendi con la dra [mariana](nombre_n)
+    - su nombre era [marcos dacenzo](nombre_n)
+    - me atendio el dr [mauro castillo](nombre_n)
+    - [franchesca herrero](nombre_n)
+    - se llama [ricardo darin](nombre_n)
+    - el es [mauricio](nombre_n)
+    - ella es [susana](nombre_n)
+
+- intent: edad_bebe
+  examples: |
+    - recien cumplio [1](mes_bebe) mes
+    - mi bebe tiene [3](mes_bebe) meses
+    - [12](mes_bebe) meses
+    - tiene [14](mes_bebe)
+    - tiene [2](mes_bebe) meses
+
 #acepta espacios y comas
 # - regex: nombre
 #   examples: |

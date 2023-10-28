@@ -106,6 +106,6 @@ class ActionVisitoEspecialista(Action):
             dispatcher.utter_message(text=str(message))
             return [SlotSet("tiene_os",True)]
          elif str(rta) == 'negacion':
-            message="Okey! Te pido que nos adjuntes foto de frente y dorso de tu DNI"
+            message="Bueno! Entonces te pido que nos adjuntes foto de frente y dorso de tu DNI"
             dispatcher.utter_message(text=str(message))
             return [SlotSet("tiene_os",False)]

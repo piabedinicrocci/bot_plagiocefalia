@@ -4,78 +4,99 @@ stories:
 # ---------------------------------------------------
 # VISITO ESPECIALISTA Y NO TIENE OS
 # ---------------------------------------------------
-- story: visito especialista y no tiene obra social
+- story: visito_especialista_y_no_tiene_os
   steps:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
   - intent: nombre_responsable
     entities:
-      - nombre
+    - nombre: pia
+  - slot_was_set:
+    - nombre: pia
   - action: utter_pregunta_especialista_visitado
   - intent: afirmacion
   - action: action_visito_especialista
+  - slot_was_set:
+    - visito_especialista: true
   - intent: nombre_neurocirujano
     entities:
-      - nombre_n: mariana
+    - nombre_n: mariana
+  - slot_was_set:
+    - nombre_n: mariana
   - action: utter_fotos_orden
-  # - intent: fotos
+    # - intent: fotos
   - action: utter_rta_fotos
   - action: utter_pregunta_nombre_bebe
   - intent: nombre_bebe
     entities:
-      - nombre_b
+    - nombre_b: ximena elgart
+  - slot_was_set:
+    - nombre_b: ximena elgart
   - action: utter_pregunta_semanas_gestacion
   - intent: semanas_gestacion
     entities:
-      - semanas_gestacion: '39'
+    - semanas_gestacion: '39'
+  - slot_was_set:
+    - semanas_gestacion: '39'
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-      - dia: '8'
-      - mes: '2'
-      - anio: '2022'
+    - mes_bebe: '8'
+    - mes_bebe: '2'
+    - anio: '2022'
+  - slot_was_set:
+    - mes_bebe: '2'
+  - slot_was_set:
+    - anio: '2022'
+  - intent: fecha_nacimiento
+    entities:
+    - dia: '8'
+    - mes: '2'
+    - anio: '2022'
   - action: utter_pregunta_os
   - intent: negacion
   - action: action_tiene_os
+  - slot_was_set:
+    - tiene_os: false
   # adjunta foto dni
   # derive el chat al Usuario de Luz Hortal
-  - action: utter_derivacion
+  - action: utter_derivacion # no estaria andando
 
 # ---------------------------------------------------
 # VISITO ESPECIALISTA Y TIENE OS
 # ---------------------------------------------------
-- story: visito especialista y tiene obra social
+- story: visito_especialista_y_tiene_obra_social
   steps:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
   - intent: nombre_responsable
     entities:
-      - nombre
+    - nombre
   - action: utter_pregunta_especialista_visitado
   - intent: afirmacion
   - action: action_visito_especialista
   - intent: nombre_neurocirujano
     entities:
-      - nombre_n: mariana
+    - nombre_n: mariana
   - action: utter_fotos_orden
   # - intent: fotos
   - action: utter_rta_fotos
   - action: utter_pregunta_nombre_bebe
   - intent: nombre_bebe
     entities:
-      - nombre_b
+    - nombre_b
   - action: utter_pregunta_semanas_gestacion
   - intent: semanas_gestacion
     entities:
-      - semanas_gestacion: '39'
+    - semanas_gestacion: '39'
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-      - dia: '8'
-      - mes: '2'
-      - anio: '2022'
+    - dia: '8'
+    - mes: '2'
+    - anio: '2022'
   - action: utter_pregunta_os
   - intent: afirmacion
   - action: action_tiene_os
@@ -88,14 +109,14 @@ stories:
 # ---------------------------------------------------
 # NO VISITO ESPECIALISTA Y NO RESIDE EN AMBA
 # ---------------------------------------------------
-- story: no visito especialista y no reside AMBA
+- story: no_visito_especialista_y_no_reside_AMBA
   steps:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
   - intent: nombre_responsable
     entities:
-      - nombre
+    - nombre
   - action: utter_pregunta_especialista_visitado
   - intent: negacion
   - action: action_visito_especialista #reside amba?
@@ -106,14 +127,14 @@ stories:
 # ---------------------------------------------------
 # NO VISITO ESPECIALISTA Y RESIDE EN AMBA
 # ---------------------------------------------------
-- story: no visito especialista y reside AMBA
+- story: no_visito_especialista_y_reside_AMBA
   steps:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
   - intent: nombre_responsable
     entities:
-      - nombre
+    - nombre
   - action: utter_pregunta_especialista_visitado
   - intent: negacion
   - action: action_visito_especialista #reside amba?
@@ -121,24 +142,25 @@ stories:
   - action: utter_meses_bebe
   - intent: edad_bebe
     entities:
-      - mes_bebe: '1'
+    - mes_bebe: '1'
   - action: action_edad_bebe
   # arranca flujo alternativo nombre bebe
   - action: utter_pregunta_nombre_bebe
   - intent: nombre_bebe
     entities:
-      - nombre_b
+    - nombre_b
   - action: utter_pregunta_semanas_gestacion
   - intent: semanas_gestacion
     entities:
-      - semanas_gestacion: '39'
+    - semanas_gestacion: '39'
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-      - dia: '8'
-      - mes: '2'
-      - anio: '2022'
+    - dia: '8'
+    - mes: '2'
+    - anio: '2022'
   # crear paciente y agendar turno en Odoo
   # ver turnos disponibles
   # confirmar turno
   - action: utter_confirmacion_turno # no va este, es para probar que la story sigue luego de la fecha
+

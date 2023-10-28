@@ -65,5 +65,5 @@ stories:
     entities:
       - dia: '8'
       - mes: '2'
-      - anio: '2023'
+      - anio: '2022'
   - action: utter_fin #no va este, es para probar que la story sigue luego de la fecha

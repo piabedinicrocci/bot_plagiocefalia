@@ -49,5 +49,21 @@ stories:
   - action: utter_meses_bebe
   - intent: edad_bebe
     entities:
-      - mes_bebe
+      - mes_bebe: '1'
   - action: action_edad_bebe
+  # arranca flujo alternativo nombre bebe
+  - action: utter_pregunta_nombre_bebe
+  - intent: nombre_bebe
+    entities:
+      - nombre_b
+  - action: utter_pregunta_semanas_gestacion
+  - intent: semanas_gestacion
+    entities:
+      - semanas_gestacion: '39'
+  - action: utter_pregunta_fecha_nacimiento
+  - intent: fecha_nacimiento
+    entities:
+      - dia: '8'
+      - mes: '2'
+      - anio: '2023'
+  - action: utter_fin #no va este, es para probar que la story sigue luego de la fecha

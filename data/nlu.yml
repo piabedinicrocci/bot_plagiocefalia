@@ -75,6 +75,30 @@ nlu:
     - tiene [14](mes_bebe)
     - tiene [2](mes_bebe) meses
 
+- intent: nombre_bebe
+  examples: |
+    - su nombre es [maria florencia rodriguez](nombre_b)
+    - mi bebe se llama [juan francisco herrero](nombre_b)
+    - [ximena elgart](nombre_b)
+    - [juan cruz cadile](nombre_b)
+    - se llama [delfina ferro](nombre_b)
+    - el es [jesus spinelli](nombre_b)
+    - ella es [sol echarri](nombre_b)
+
+- intent: semanas_gestacion
+  examples: |
+    - geste durante [37](semanas_gestacion) semanas
+    - mi bebe se gesto por [38](semanas_gestacion) semanas
+    - [39](semanas_gestacion) semanas
+    - tuve [40](semanas_gestacion)
+
+- intent: fecha_nacimiento
+  examples: |
+    - mi bebe nacio el [8](dia)/[2](mes)/[2022](anio)
+    - [28](dia)/[12](mes)/[2023](anio)
+    - la fecha de nacimiento de mi bebe es [25](dia)/[8](mes)/[2021](anio)
+    - nacio el [13](dia) del [4](mes) de [2022](anio)
+
 #acepta espacios y comas
 # - regex: nombre
 #   examples: |

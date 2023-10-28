@@ -8,12 +8,20 @@ intents:
   - nombre_responsable
   - nombre_neurocirujano
   - edad_bebe
+  - nombre_bebe
+  - semanas_gestacion
+  - fecha_nacimiento
 
 entities:
   - nombre
   - visito_especialista
   - nombre_n
   - mes_bebe
+  - nombre_b
+  - semanas_gestacion
+  - dia
+  - mes
+  - anio
 
 actions:
   - action_visito_especialista
@@ -41,6 +49,37 @@ slots:
     mappings:
       - type: from_entity
         entity: mes_bebe
+  nombre_b:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: nombre_b
+  semanas_gestacion:
+    type: float
+    mappings:
+      - type: from_entity
+        entity: semanas_gestacion
+  dia:
+    type: float
+    min_value: 1
+    max_value: 31
+    mappings:
+      - type: from_entity
+        entity: dia
+  mes:
+    type: float
+    min_value: 1
+    max_value: 12
+    mappings:
+      - type: from_entity
+        entity: mes
+  anio:
+    type: float
+    min_value: 2021
+    max_value: 2023
+    mappings:
+      - type: from_entity
+        entity: anio
 
 responses:
   utter_inicio:
@@ -74,6 +113,15 @@ responses:
 
   utter_meses_bebe:
   - text: "Y decime, cuantos meses tiene tu bebe?"
+
+  utter_pregunta_nombre_bebe:
+  - text: "El nombre completo de tu bebe: "
+
+  utter_pregunta_semanas_gestacion:
+  - text: "Que lindo nombre! Y cuantas semanas de gestacion tuviste?"
+
+  utter_pregunta_fecha_nacimiento:
+  - text: "Okey. Ahora decime la fecha de nacimiento de {nombre_b}. Usa el formato dd/mm/aa"
 
   utter_fin:
   - text: "Hasta luego {nombre}!​👋​ Cualquier consulta estamos para ayudarte"

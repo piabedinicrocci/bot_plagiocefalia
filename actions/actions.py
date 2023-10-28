@@ -64,31 +64,30 @@ class ActionEdadBebe(Action):
          return "action_edad_bebe"
 
      def run(self, dispatcher: CollectingDispatcher,
-             tracker: Tracker,
-             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-         rta= tracker.latest_message['entities'][0]['value']
-         rta2= next(tracker.get_latest_entity_values("mes_bebe"),None)
-         dispatcher.utter_message(text=str(rta))
-         dispatcher.utter_message(text=str(rta2))
-         if (rta >= 0) and (rta <= 1):
-            message="ENTRE 0 Y 1"
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        rta = float(next(tracker.get_latest_entity_values("mes_bebe"),None))
+        # dispatcher.utter_message(text=str(rta))
+        if (rta >= 0) and (rta <= 1):
+            message = "Que bueno que nos contactes a tiempo 👍 ya que tu bebé al estar en sus primeros días de vida está en la edad ideal para corregir la asimetría craneal con ejercicios posicionales y si crees necesario puedes escribirnos y coordinar una visita con unos de nuestros Neurocirujanos Pediátricos.\nNuestros consultorios están ubicados en la Av. Callao y Av. Corrientes, a 5 cuadras del Obelisco en Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nPara agendar una consulta es necesario que nos brindes por este medio: "
             dispatcher.utter_message(text=str(message))
-            return [SlotSet("mes_bebe",rta)]
-         elif (rta > 1) and (rta <= 7):
-            message="ENTRE 2 Y 7"
+            return [SlotSet("mes_bebe", rta)]
+        elif (rta > 1) and (rta <= 7):
+            message = f"Que bueno que nos contactes a tiempo 👍 ya que tu bebé al tener {int(rta)} meses de edad está en la edad ideal para corregir la asimetría craneal.\nEn este caso lo más adecuado es que nos visites con tu bebé en nuestra clínica.\nNuestros consultorios están ubicados en la Av. Callao y Av. Corrientes, a 5 cuadras del Obelisco en Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nPara agendar una consulta es necesario que nos brindes por este medio: "
             dispatcher.utter_message(text=str(message))
-            return [SlotSet("mes_bebe",rta)]
-         elif (rta > 7) and (rta <= 10):
-            message="ENTRE 8 Y 10"
+            return [SlotSet("mes_bebe", rta)]
+        elif (rta > 7) and (rta <= 10):
+            message = f"Que bueno que nos contactes! 👍 Como tu bebé tiene {int(rta)} meses estamos en una edad avanzada pero a tiempo para corregir la asimetría craneal\nEn este caso lo más adecuado es que nos visites con tu bebé en nuestra clínica.\n*Te recomendamos coordinar un turno para una evaluación, el tiempo es determinante para obtener buenos resultados.*\nNuestros consultorios están ubicados en la Av. Callao y Av. Corrientes, a 5 cuadras del Obelisco en Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nPara agendar una consulta es necesario que nos brindes por este medio: "
             dispatcher.utter_message(text=str(message))
-            return [SlotSet("mes_bebe",rta)]
-         elif (rta > 10) and (rta <= 14):
-            message="ENTRE 11 Y 14"
+            return [SlotSet("mes_bebe", rta)]
+        elif (rta > 10) and (rta <= 14):
+            message = f"Que bueno que nos contactes! 👍 Como tu bebé tiene {int(rta)} meses estamos en una MUY edad avanzada pero a tiempo para corregir la asimetría craneal\nEn este caso lo más adecuado es que nos visites con tu bebé en nuestra clínica.\n*Te recomendamos coordinar un turno para una evaluación, el tiempo es determinante para obtener buenos resultados.*\nNuestros consultorios están ubicados en la Av. Callao y Av. Corrientes, a 5 cuadras del Obelisco en Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nPara agendar una consulta es necesario que nos brindes por este medio: "
             dispatcher.utter_message(text=str(message))
-            return [SlotSet("mes_bebe",rta)]
-         elif (rta > 14):
-            message="MAS DE 14"
+            return [SlotSet("mes_bebe", rta)]
+        elif (rta > 14):
+            message = f"Nosotros somos técnicos ortopédicos y nuestro tratamiento para corregir las asimetrías craneales tiene que iniciarse antes de los 12 meses de edad. Luego de esta edad no es efectivo.\nEn este caso, lo que te recomendamos es visitar a un *Neurocirujano Pediátrico*, él podrá evacuar todas tus dudas.\nQuedamos a tu disposición, Plagiocefalia Argentina👍\nTe dejo dos videos para que conozcas sobre Plagiocefalia!\n⏯️ https://youtu.be/XzTgTgPC7Xw\n⏯️ https://youtu.be/Oh0TF_ze-hI"
             dispatcher.utter_message(text=str(message))
-            return [SlotSet("mes_bebe",rta)]
-         else:
-            return dispatcher.utter_message(text=str("no entro"))
+            return [SlotSet("mes_bebe", rta)]
+        else:
+            dispatcher.utter_message(text=str("No entendí, ¿me repetis cuantos meses tiene tu bebe?"))
+            return []

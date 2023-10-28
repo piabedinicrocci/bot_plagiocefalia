@@ -1,0 +1,36 @@
+[
+  {
+    "tag_name": "entity",
+    "ids_to_tags": {
+      "1": "B-mes_bebe",
+      "2": "I-mes_bebe",
+      "3": "L-mes_bebe",
+      "4": "U-mes_bebe",
+      "5": "B-nombre",
+      "6": "I-nombre",
+      "7": "L-nombre",
+      "8": "U-nombre",
+      "9": "B-nombre_n",
+      "10": "I-nombre_n",
+      "11": "L-nombre_n",
+      "12": "U-nombre_n",
+      "0": "O"
+    },
+    "tags_to_ids": {
+      "B-mes_bebe": 1,
+      "I-mes_bebe": 2,
+      "L-mes_bebe": 3,
+      "U-mes_bebe": 4,
+      "B-nombre": 5,
+      "I-nombre": 6,
+      "L-nombre": 7,
+      "U-nombre": 8,
+      "B-nombre_n": 9,
+      "I-nombre_n": 10,
+      "L-nombre_n": 11,
+      "U-nombre_n": 12,
+      "O": 0
+    },
+    "num_tags": 13
+  }
+]

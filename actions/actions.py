@@ -37,7 +37,7 @@ class ActionVisitoEspecialista(Action):
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
          rta= tracker.latest_message['intent']['name']
          if str(rta) == 'afirmacion':
-            message="Entiendo. ¿Con que neurocirujano te atendiste?"
+            message="Muchas gracias por contactarnos! Por favor menciona el nombre del Neurocirujano que les emitió la orden médica solicitando el uso de la Ortesis Craneal: "
             dispatcher.utter_message(text=str(message))
             return [SlotSet("visito_especialista",True)]
          elif str(rta) == 'negacion':
@@ -91,3 +91,21 @@ class ActionEdadBebe(Action):
         else:
             dispatcher.utter_message(text=str("No entendí, ¿me repetis cuantos meses tiene tu bebe?"))
             return []
+        
+class ActionVisitoEspecialista(Action):
+
+     def name(self) -> Text:
+         return "action_tiene_os"
+
+     def run(self, dispatcher: CollectingDispatcher,
+             tracker: Tracker,
+             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+         rta= tracker.latest_message['intent']['name']
+         if str(rta) == 'afirmacion':
+            message="Genial! Te pedimos que nos adjuntes foto del carnet de la misma"
+            dispatcher.utter_message(text=str(message))
+            return [SlotSet("tiene_os",True)]
+         elif str(rta) == 'negacion':
+            message="Okey! Te pido que nos adjuntes foto de frente y dorso de tu DNI"
+            dispatcher.utter_message(text=str(message))
+            return [SlotSet("tiene_os",False)]

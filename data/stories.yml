@@ -1,8 +1,10 @@
 version: "3.1"
 
 stories:
-
-- story: visito especialista
+# ---------------------------------------------------
+# VISITO ESPECIALISTA Y NO TIENE OS
+# ---------------------------------------------------
+- story: visito especialista y no tiene obra social
   steps:
   - intent: inicio
   - action: utter_inicio
@@ -15,10 +17,77 @@ stories:
   - action: action_visito_especialista
   - intent: nombre_neurocirujano
     entities:
-      - nombre_n
+      - nombre_n: mariana
   - action: utter_fotos_orden
-  # ver tema de fotos
+  # - intent: fotos
+  - action: utter_rta_fotos
+  - action: utter_pregunta_nombre_bebe
+  - intent: nombre_bebe
+    entities:
+      - nombre_b
+  - action: utter_pregunta_semanas_gestacion
+  - intent: semanas_gestacion
+    entities:
+      - semanas_gestacion: '39'
+  - action: utter_pregunta_fecha_nacimiento
+  - intent: fecha_nacimiento
+    entities:
+      - dia: '8'
+      - mes: '2'
+      - anio: '2022'
+  - action: utter_pregunta_os
+  - intent: negacion
+  - action: action_tiene_os
+  # adjunta foto dni
+  # derive el chat al Usuario de Luz Hortal
+  - action: utter_derivacion
 
+# ---------------------------------------------------
+# VISITO ESPECIALISTA Y TIENE OS
+# ---------------------------------------------------
+- story: visito especialista y tiene obra social
+  steps:
+  - intent: inicio
+  - action: utter_inicio
+  - action: utter_pregunta_nombre_responsable
+  - intent: nombre_responsable
+    entities:
+      - nombre
+  - action: utter_pregunta_especialista_visitado
+  - intent: afirmacion
+  - action: action_visito_especialista
+  - intent: nombre_neurocirujano
+    entities:
+      - nombre_n: mariana
+  - action: utter_fotos_orden
+  # - intent: fotos
+  - action: utter_rta_fotos
+  - action: utter_pregunta_nombre_bebe
+  - intent: nombre_bebe
+    entities:
+      - nombre_b
+  - action: utter_pregunta_semanas_gestacion
+  - intent: semanas_gestacion
+    entities:
+      - semanas_gestacion: '39'
+  - action: utter_pregunta_fecha_nacimiento
+  - intent: fecha_nacimiento
+    entities:
+      - dia: '8'
+      - mes: '2'
+      - anio: '2022'
+  - action: utter_pregunta_os
+  - intent: afirmacion
+  - action: action_tiene_os
+  # adjunta foto os
+  - action: utter_foto_dni
+  # adjunta foto dni
+  # derive el chat al Usuario de Luz Hortal
+  - action: utter_derivacion
+
+# ---------------------------------------------------
+# NO VISITO ESPECIALISTA Y NO RESIDE EN AMBA
+# ---------------------------------------------------
 - story: no visito especialista y no reside AMBA
   steps:
   - intent: inicio
@@ -34,6 +103,9 @@ stories:
   - action: utter_no_reside_amba
   #- action: action_finalizar_comunicacion
 
+# ---------------------------------------------------
+# NO VISITO ESPECIALISTA Y RESIDE EN AMBA
+# ---------------------------------------------------
 - story: no visito especialista y reside AMBA
   steps:
   - intent: inicio
@@ -66,4 +138,7 @@ stories:
       - dia: '8'
       - mes: '2'
       - anio: '2022'
-  - action: utter_fin #no va este, es para probar que la story sigue luego de la fecha
+  # crear paciente y agendar turno en Odoo
+  # ver turnos disponibles
+  # confirmar turno
+  - action: utter_confirmacion_turno # no va este, es para probar que la story sigue luego de la fecha

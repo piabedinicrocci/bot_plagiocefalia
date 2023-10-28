@@ -22,11 +22,13 @@ entities:
   - dia
   - mes
   - anio
+  - tiene_os
 
 actions:
   - action_visito_especialista
   - action_finalizar_comunicacion
   - action_edad_bebe
+  - action_tiene_os
 
 slots:
   nombre:
@@ -80,6 +82,11 @@ slots:
     mappings:
       - type: from_entity
         entity: anio
+  tiene_os:
+    type: bool
+    initial_value: False
+    mappings:
+      - type: custom
 
 responses:
   utter_inicio:
@@ -106,7 +113,7 @@ responses:
     - text: "Entiendo. ¿Con que neurocirujano te atendiste?"
 
   utter_fotos_orden:
-  - text: "Buenisimo! Ahora te pido que me envies las fotos de la orden y los papeles de la consulta"
+  - text: "Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊"
 
   utter_no_reside_amba:
   - text: "Solamente atendemos presencial en el AMBA, por lo que si se te dificulta acercarte envianos tu audio explicando tu situación y un operador te atenderá a la brevedad"
@@ -122,6 +129,21 @@ responses:
 
   utter_pregunta_fecha_nacimiento:
   - text: "Okey. Ahora decime la fecha de nacimiento de {nombre_b}. Usa el formato dd/mm/aa"
+
+  utter_rta_fotos:
+  - text: "¡Perfecto! Para poder derivarte al sector de presupuesto y coordinación de turno para la toma de molde, vamos a solicitarle los siguientes datos:"
+
+  utter_pregunta_os:
+  - text: "Tienes obra social?"
+
+  utter_foto_dni:
+  - text: "Y ahora te pido que nos adjuntes foto de frente y dorso de tu DNI"
+
+  utter_derivacion:
+  - text: "Ya te derivé al sector correspondiente. En el transcurso del día se estarán contactando con vos!☺️"
+
+  utter_confirmacion_turno:
+  - text: "Ya te derivé al sector correspondiente. En el transcurso del día se estarán contactando con vos!☺️"
 
   utter_fin:
   - text: "Hasta luego {nombre}!​👋​ Cualquier consulta estamos para ayudarte"

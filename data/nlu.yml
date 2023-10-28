@@ -60,6 +60,8 @@ nlu:
   examples: |
     - su nombre es dr [juan](nombre_n)
     - me atendi con la dra [mariana](nombre_n)
+    - la doctora es [juana azurduy](nombre_n)
+    - el doctor es [francisco](nombre_n)
     - su nombre era [marcos dacenzo](nombre_n)
     - me atendio el dr [mauro castillo](nombre_n)
     - [franchesca herrero](nombre_n)

@@ -89,9 +89,12 @@ nlu:
     - tuve [39](semanas_gestacion) semanas
 - intent: fecha_nacimiento
   examples: |
-    - mi bebe nacio el [8](dia)/[2](mes)/[2022](anio)
-    - [28](dia)/[12](mes)/[2023](anio)
-    - la fecha de nacimiento de mi bebe es [25](dia)/[8](mes)/[2021](anio)
-    - nacio el [13](dia) del [4](mes) de [2022](anio)
-    - mi bebe nacio el dia [8](dia) del mes [2](mes) del año [2022](anio)
-    - mi bebe nacio el dia [8](dia) del mes [2](mes) del año [2022](anio)
+    - mi bebe nacio el [8/2/2022](fecha_nacimiento_bebe)
+    - [28/12/2023](fecha_nacimiento_bebe)
+    - la fecha de nacimiento de mi bebe es [25/8/2021](fecha_nacimiento_bebe)
+    - nacio el [13/4/2022](fecha_nacimiento_bebe)
+    - mi bebe nacio el dia [8/2/2022](fecha_nacimiento_bebe)
+
+- regex: fecha_nacimiento_bebe
+  examples: |
+    - (\d{1,2})/(\d{1,2})/(\d{4})

@@ -42,18 +42,7 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - mes_bebe: '8'
-    - mes_bebe: '2'
-    - anio: '2022'
-  - slot_was_set:
-    - mes_bebe: '2'
-  - slot_was_set:
-    - anio: '2022'
-  - intent: fecha_nacimiento
-    entities:
-    - dia: '8'
-    - mes: '2'
-    - anio: '2022'
+    - fecha_nacimiento
   - action: utter_pregunta_os
   - intent: negacion
   - action: action_tiene_os
@@ -94,9 +83,7 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - dia: '8'
-    - mes: '2'
-    - anio: '2022'
+    - fecha_nacimiento
   - action: utter_pregunta_os
   - intent: afirmacion
   - action: action_tiene_os
@@ -156,9 +143,7 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - dia: '8'
-    - mes: '2'
-    - anio: '2022'
+    - fecha_nacimiento
   # crear paciente y agendar turno en Odoo
   # ver turnos disponibles
   # confirmar turno

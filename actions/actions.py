@@ -152,9 +152,11 @@ class ActionConfirmacionTurno(Action):
             dispatcher.utter_message(text=str("Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
         elif(opcion_seleccionada > 0) and (opcion_seleccionada <= cantidad_opciones):
             datos_turno = lista_opciones[int(opcion_seleccionada)-1].split(" - ")
-            dia, horario, doctor, honorarios = datos_turno 
+            fecha, horario, doctor, honorarios = datos_turno
+            posicion = fecha.rfind('d')-1
+            fecha_sin_anio = fecha[:posicion]
             nombre_bebe = tracker.get_slot("nombre_b")
-            dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {dia} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}"))
+            dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {fecha_sin_anio} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}"))
             dispatcher.utter_message(text=str("https://g.page/PlagiocefaliaArgentina?share"))
             dispatcher.utter_message(text=str("El equipo de Plagiocefalia Argentina https://youtu.be/wrfBgNa0shY"))
         else:

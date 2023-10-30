@@ -50,7 +50,11 @@ stories:
     - tiene_os: false
   # adjunta foto dni
   # derive el chat al Usuario de Luz Hortal
-  - action: utter_derivacion # no estaria andando
+  - action: action_mostrar_turnos
+  - intent: opcion_turno
+    entities:
+    - opcion
+  - action: action_confirmacion_turno
 
 # ---------------------------------------------------
 # VISITO ESPECIALISTA Y TIENE OS
@@ -91,7 +95,11 @@ stories:
   - action: utter_foto_dni
   # adjunta foto dni
   # derive el chat al Usuario de Luz Hortal
-  - action: utter_derivacion
+  - action: action_mostrar_turnos
+  - intent: opcion_turno
+    entities:
+    - opcion
+  - action: action_confirmacion_turno
 
 # ---------------------------------------------------
 # NO VISITO ESPECIALISTA Y NO RESIDE EN AMBA
@@ -144,8 +152,12 @@ stories:
   - intent: fecha_nacimiento
     entities:
     - fecha_nacimiento
+  - action: action_mostrar_turnos
+  - intent: opcion_turno
+    entities:
+    - opcion
+  - action: action_confirmacion_turno
   # crear paciente y agendar turno en Odoo
   # ver turnos disponibles
   # confirmar turno
-  - action: utter_confirmacion_turno # no va este, es para probar que la story sigue luego de la fecha
 

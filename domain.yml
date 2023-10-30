@@ -11,6 +11,7 @@ intents:
 - nombre_responsable
 - semanas_gestacion
 - fecha_nacimiento_bebe
+- opcion_turno
 entities:
 - nombre_b
 - semanas_gestacion
@@ -19,21 +20,14 @@ entities:
 - visito_especialista
 - mes_bebe
 - tiene_os
+- opcion
 actions:
-- utter_inicio
-- utter_pregunta_fecha_nacimiento
-- utter_pregunta_nombre_responsable
-- utter_pregunta_nombre_bebe
-- utter_pregunta_semanas_gestacion
-- utter_pregunta_os
-- utter_rta_fotos
 - action_visito_especialista
-- utter_derivacion
 - action_tiene_os
-- utter_pregunta_especialista_visitado
-- utter_fotos_orden
 - action_finalizar_comunicacion
 - action_edad_bebe
+- action_mostrar_turnos
+- action_confirmacion_turno
 slots:
   nombre:
     type: text
@@ -70,6 +64,12 @@ slots:
     initial_value: false
     mappings:
     - type: custom
+  opcion:
+    type: float
+    mappings:
+    - type: from_entity
+      entity: opcion
+
 responses:
   utter_inicio:
   - text: |-
@@ -109,10 +109,6 @@ responses:
   - text: Y tienes obra social?
   utter_foto_dni:
   - text: Y ahora te pido que nos adjuntes foto de frente y dorso de tu DNI
-  utter_derivacion:
-  - text: Ya te derivé al sector correspondiente. En el transcurso del día se estarán contactando con vos!☺️
-  utter_confirmacion_turno:
-  - text: Bien,👌 ya queda agendada la visita de Derek para el día...
   utter_fin:
   - text: Hasta luego {nombre}!​👋​ Cualquier consulta estamos para ayudarte
   utter_desconocido:

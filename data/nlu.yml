@@ -98,3 +98,13 @@ nlu:
 - regex: fecha_nacimiento_bebe
   examples: |
     - (\d{1,2})/(\d{1,2})/(\d{4})
+
+- intent: opcion_turno
+  examples: |
+    - numero de opcion [1](opcion)
+    - opcion numero [2](opcion)
+    - elijo la opcion [3](opcion)
+    - me queda mejor la opcion [4](opcion)
+    - opcion [5](opcion)
+    - prefiero la [6](opcion)
+    - puede ser la [7](opcion)

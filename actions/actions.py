@@ -13,6 +13,7 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 from rasa_sdk.events import ActionExecutionRejected
+import os
 
 # class ActionHelloWorld(Action):
 #
@@ -109,3 +110,53 @@ class ActionVisitoEspecialista(Action):
             message="Bueno! Entonces te pido que nos adjuntes foto de frente y dorso de tu DNI"
             dispatcher.utter_message(text=str(message))
             return [SlotSet("tiene_os",False)]
+
+class ActionMostrarTurnos(Action):
+
+     def name(self) -> Text:
+         return "action_mostrar_turnos"
+
+     def run(self, dispatcher: CollectingDispatcher,
+             tracker: Tracker,
+             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        dispatcher.utter_message(text=str("Para proceder con la agenda de un turno, seleccione alguna de las siguientes opciones:"))
+        ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
+        with open(ruta_completa, 'r') as archivo:
+            lista_opciones = archivo.readlines()
+            lista_opciones = [linea.strip() for linea in lista_opciones]
+        if lista_opciones is not None:
+            numero_opcion = 1
+            for opcion in lista_opciones:
+                dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: {opcion}"))
+                numero_opcion += 1
+            dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: Consulta telefonica con un operador"))
+        else:
+            lista_opciones[0] = str("Opcion 1: Consulta telefonica con un operador")
+        return []
+     
+class ActionConfirmacionTurno(Action):
+
+     def name(self) -> Text:
+         return "action_confirmacion_turno"
+
+     def run(self, dispatcher: CollectingDispatcher,
+             tracker: Tracker,
+             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        opcion_seleccionada = float(next(tracker.get_latest_entity_values("opcion"),None))
+        ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
+        with open(ruta_completa, 'r') as archivo:
+            lista_opciones = archivo.readlines()
+            lista_opciones = [linea.strip() for linea in lista_opciones]
+        cantidad_opciones = len(lista_opciones)
+        if (opcion_seleccionada == cantidad_opciones+1): #esto es porque está la opción adicional de derivación a un operador
+            dispatcher.utter_message(text=str("Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
+        elif(opcion_seleccionada > 0) and (opcion_seleccionada <= cantidad_opciones):
+            datos_turno = lista_opciones[int(opcion_seleccionada)-1].split(" - ")
+            dia, horario, doctor, honorarios = datos_turno 
+            nombre_bebe = tracker.get_slot("nombre_b")
+            dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {dia} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}"))
+            dispatcher.utter_message(text=str("https://g.page/PlagiocefaliaArgentina?share"))
+            dispatcher.utter_message(text=str("El equipo de Plagiocefalia Argentina https://youtu.be/wrfBgNa0shY"))
+        else:
+            dispatcher.utter_message(text=str("Perdón, ingresaste una opción inválida, por favor intentalo devuelta y asegurate que el número de opción esté en el listado"))
+        return []

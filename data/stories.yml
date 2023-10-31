@@ -27,6 +27,7 @@ stories:
   - action: utter_fotos_orden
     # - intent: fotos
   - action: utter_rta_fotos
+  # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
   - intent: nombre_bebe
     entities:
@@ -43,6 +44,7 @@ stories:
   - intent: fecha_nacimiento
     entities:
     - fecha_nacimiento
+  # termina flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_os
   - intent: negacion
   - action: action_tiene_os
@@ -50,11 +52,6 @@ stories:
     - tiene_os: false
   # adjunta foto dni
   # derive el chat al Usuario de Luz Hortal
-  - action: action_mostrar_turnos
-  - intent: opcion_turno
-    entities:
-    - opcion
-  - action: action_confirmacion_turno
 
 # ---------------------------------------------------
 # VISITO ESPECIALISTA Y TIENE OS
@@ -76,6 +73,7 @@ stories:
   - action: utter_fotos_orden
   # - intent: fotos
   - action: utter_rta_fotos
+  # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
   - intent: nombre_bebe
     entities:
@@ -88,6 +86,7 @@ stories:
   - intent: fecha_nacimiento
     entities:
     - fecha_nacimiento
+  # termina flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_os
   - intent: afirmacion
   - action: action_tiene_os
@@ -95,11 +94,6 @@ stories:
   - action: utter_foto_dni
   # adjunta foto dni
   # derive el chat al Usuario de Luz Hortal
-  - action: action_mostrar_turnos
-  - intent: opcion_turno
-    entities:
-    - opcion
-  - action: action_confirmacion_turno
 
 # ---------------------------------------------------
 # NO VISITO ESPECIALISTA Y NO RESIDE EN AMBA
@@ -139,7 +133,7 @@ stories:
     entities:
     - mes_bebe: '1'
   - action: action_edad_bebe
-  # arranca flujo alternativo nombre bebe
+  # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
   - intent: nombre_bebe
     entities:
@@ -152,12 +146,10 @@ stories:
   - intent: fecha_nacimiento
     entities:
     - fecha_nacimiento
+  # termina flujo alternativo nombre bebe, gestacion, fecha nac
+  # crear paciente y agendar turno en Odoo
   - action: action_mostrar_turnos
   - intent: opcion_turno
     entities:
     - opcion
   - action: action_confirmacion_turno
-  # crear paciente y agendar turno en Odoo
-  # ver turnos disponibles
-  # confirmar turno
-

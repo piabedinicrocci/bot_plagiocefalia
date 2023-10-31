@@ -94,19 +94,19 @@ responses:
   utter_fotos_orden:
   - text: Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊
   utter_no_reside_amba:
-  - text: Solamente atendemos presencial en el AMBA, por lo que si se te dificulta acercarte envianos tu audio explicando tu situación y un operador te atenderá a la brevedad
+  - text: Solamente atendemos presencial en el AMBA, por lo que si se te dificulta acercarte envianos un audio explicando tu situación y un operador te atenderá a la brevedad
   utter_meses_bebe:
   - text: Y decime, cuantos meses tiene tu bebe?
   utter_pregunta_nombre_bebe:
   - text: 'El nombre completo de tu bebe: '
   utter_pregunta_semanas_gestacion:
-  - text: Que lindo nombre! Y en cuantas semanas se gestó el bebe?
+  - text: 'Las semanas de gestación de tu bebé: '
   utter_pregunta_fecha_nacimiento:
-  - text: Okey. Ahora decime la fecha de nacimiento de {nombre_b}. Especifica el dia, el mes y el año
+  - text: La fecha de nacimiento de {nombre_b}. Utiliza el formato dd/mm/aaaa
   utter_rta_fotos:
   - text: '¡Perfecto! Para poder derivarte al sector de presupuesto y coordinación de turno para la toma de molde, vamos a solicitarle los siguientes datos:'
   utter_pregunta_os:
-  - text: Y tienes obra social?
+  - text: Tienes obra social?
   utter_foto_dni:
   - text: Y ahora te pido que nos adjuntes foto de frente y dorso de tu DNI
   utter_fin:

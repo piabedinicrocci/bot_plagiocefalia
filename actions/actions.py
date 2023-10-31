@@ -119,7 +119,7 @@ class ActionMostrarTurnos(Action):
      def run(self, dispatcher: CollectingDispatcher,
              tracker: Tracker,
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        dispatcher.utter_message(text=str("Para proceder con la agenda de un turno, seleccione alguna de las siguientes opciones:"))
+        dispatcher.utter_message(text=str("Para proceder con la agenda de un turno, seleccione alguna de las siguientes opciones: "))
         ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
         with open(ruta_completa, 'r') as archivo:
             lista_opciones = archivo.readlines()
@@ -156,9 +156,7 @@ class ActionConfirmacionTurno(Action):
             posicion = fecha.rfind('d')-1
             fecha_sin_anio = fecha[:posicion]
             nombre_bebe = tracker.get_slot("nombre_b")
-            dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {fecha_sin_anio} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}"))
-            dispatcher.utter_message(text=str("https://g.page/PlagiocefaliaArgentina?share"))
-            dispatcher.utter_message(text=str("El equipo de Plagiocefalia Argentina https://youtu.be/wrfBgNa0shY"))
+            dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {fecha_sin_anio} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina https://youtu.be/wrfBgNa0shY"))
         else:
             dispatcher.utter_message(text=str("Perdón, ingresaste una opción inválida, por favor intentalo devuelta y asegurate que el número de opción esté en el listado"))
         return []

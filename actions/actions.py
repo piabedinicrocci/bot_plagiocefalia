@@ -160,3 +160,20 @@ class ActionConfirmacionTurno(Action):
         else:
             dispatcher.utter_message(text=str("Perdón, ingresaste una opción inválida, por favor intentalo devuelta y asegurate que el número de opción esté en el listado"))
         return []
+
+class ActionGuardarNombreResponsable(Action):
+    def name(self) -> Text:
+        return "action_guardar_nombre_responsable"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        nombre_con_comillas = next(tracker.get_latest_entity_values("nombre"),None)
+        if nombre_con_comillas:
+            nombre_sin_comillas = nombre_con_comillas.replace('"', '')  # Elimina las comillas dobles
+            dispatcher.utter_message(f"Bienvenid@ {nombre_sin_comillas}" + "!​ ¿Ya has visitado un especialista craneal?")
+            return [SlotSet("nombre", nombre_sin_comillas)]
+        else:
+            dispatcher.utter_message("No se ha proporcionado un nombre.")
+            return []
+        

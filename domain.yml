@@ -28,6 +28,7 @@ actions:
 - action_edad_bebe
 - action_mostrar_turnos
 - action_confirmacion_turno
+- action_guardar_nombre_responsable
 slots:
   nombre:
     type: text
@@ -82,8 +83,6 @@ responses:
   utter_pregunta_nombre_responsable:
   - text: ¿Como te llamas?
   - text: ¿Como es tu nombre?
-  utter_pregunta_especialista_visitado:
-  - text: Bienvenid@ {nombre}!​ ¿Ya has visitado un especialista craneal?
   utter_bifurcacion_especialista_visitado:
   - condition:
     - type: slot

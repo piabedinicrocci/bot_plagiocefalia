@@ -44,12 +44,17 @@ nlu:
     - no realmente
 - intent: nombre_responsable
   examples: |
-    - mi nombre es [pia](nombre)
-    - me llamo [martino ferrero](nombre)
-    - [matias fernandez](nombre)
-    - soy [pablo molina](nombre)
-    - soy [belen](nombre)
-    - [pia](nombre)
+    - mi nombre es ["pia"](nombre)
+    - me llamo ["martino ferrero"](nombre)
+    - ["matias fernandez"](nombre)
+    - soy ["pablo molina"](nombre)
+    - soy ["belen"](nombre)
+    - ["pia"](nombre)
+
+- regex: nombre
+  examples: |
+    - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]*"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$
+
 - intent: nombre_neurocirujano
   examples: |
     - su nombre es dr [juan](nombre_n)

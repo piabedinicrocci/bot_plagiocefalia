@@ -14,7 +14,7 @@ stories:
     - nombre: pia
   - slot_was_set:
     - nombre: pia
-  - action: utter_pregunta_especialista_visitado
+  - action: action_guardar_nombre_responsable #visito especialista?
   - intent: afirmacion
   - action: action_visito_especialista
   - slot_was_set:
@@ -64,7 +64,7 @@ stories:
   - intent: nombre_responsable
     entities:
     - nombre
-  - action: utter_pregunta_especialista_visitado
+  - action: action_guardar_nombre_responsable #visito especialista?
   - intent: afirmacion
   - action: action_visito_especialista
   - intent: nombre_neurocirujano
@@ -106,7 +106,7 @@ stories:
   - intent: nombre_responsable
     entities:
     - nombre
-  - action: utter_pregunta_especialista_visitado
+  - action: action_guardar_nombre_responsable #visito especialista?
   - intent: negacion
   - action: action_visito_especialista #reside amba?
   - intent: negacion
@@ -124,7 +124,7 @@ stories:
   - intent: nombre_responsable
     entities:
     - nombre
-  - action: utter_pregunta_especialista_visitado
+  - action: action_guardar_nombre_responsable #visito especialista?
   - intent: negacion
   - action: action_visito_especialista #reside amba?
   - intent: afirmacion

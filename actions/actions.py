@@ -38,7 +38,7 @@ class ActionVisitoEspecialista(Action):
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
          rta= tracker.latest_message['intent']['name']
          if str(rta) == 'afirmacion':
-            message="Muchas gracias por contactarnos! Por favor menciona el nombre del Neurocirujano que les emitió la orden médica solicitando el uso de la Ortesis Craneal: "
+            message="Muchas gracias por contactarnos! Por favor ingresa el nombre completo del Neurocirujano que les emitió la orden médica solicitando el uso de la Ortesis Craneal entre comillas dobles: "
             dispatcher.utter_message(text=str(message))
             return [SlotSet("visito_especialista",True)]
          elif str(rta) == 'negacion':
@@ -169,11 +169,43 @@ class ActionGuardarNombreResponsable(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         nombre_con_comillas = next(tracker.get_latest_entity_values("nombre"),None)
+        dispatcher.utter_message(f"{nombre_con_comillas}")
         if nombre_con_comillas:
             nombre_sin_comillas = nombre_con_comillas.replace('"', '')  # Elimina las comillas dobles
             dispatcher.utter_message(f"Bienvenid@ {nombre_sin_comillas}" + "!​ ¿Ya has visitado un especialista craneal?")
             return [SlotSet("nombre", nombre_sin_comillas)]
         else:
-            dispatcher.utter_message("No se ha proporcionado un nombre.")
+            dispatcher.utter_message("No has proporcionado un nombre R")
+            return []
+
+class ActionGuardarNombreNeurocirujano(Action):
+    def name(self) -> Text:
+        return "action_guardar_nombre_neurocirujano"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        nombre_con_comillas = next(tracker.get_latest_entity_values("nombre_n"),None)
+        if nombre_con_comillas:
+            nombre_sin_comillas = nombre_con_comillas.replace('"', '')  # Elimina las comillas dobles
+            dispatcher.utter_message(f"Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊")
+            return [SlotSet("nombre_n", nombre_sin_comillas)]
+        else:
+            dispatcher.utter_message("No has proporcionado un nombre N")
             return []
         
+class ActionGuardarNombreBebe(Action):
+    def name(self) -> Text:
+        return "action_guardar_nombre_bebe"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        nombre_con_comillas = next(tracker.get_latest_entity_values("nombre_b"),None)
+        if nombre_con_comillas:
+            nombre_sin_comillas = nombre_con_comillas.replace('"', '')  # Elimina las comillas dobles
+            dispatcher.utter_message(f"Las semanas de gestación de tu bebé: ")
+            return [SlotSet("nombre_b", nombre_sin_comillas)]
+        else:
+            dispatcher.utter_message("No has proporcionado un nombre B")
+            return []

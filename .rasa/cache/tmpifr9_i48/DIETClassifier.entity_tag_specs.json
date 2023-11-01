@@ -1,0 +1,52 @@
+[
+  {
+    "tag_name": "entity",
+    "ids_to_tags": {
+      "1": "B-fecha_nacimiento_bebe",
+      "2": "I-fecha_nacimiento_bebe",
+      "3": "L-fecha_nacimiento_bebe",
+      "4": "U-fecha_nacimiento_bebe",
+      "5": "B-mes_bebe",
+      "6": "I-mes_bebe",
+      "7": "L-mes_bebe",
+      "8": "U-mes_bebe",
+      "9": "B-nombre_b",
+      "10": "I-nombre_b",
+      "11": "L-nombre_b",
+      "12": "U-nombre_b",
+      "13": "B-opcion",
+      "14": "I-opcion",
+      "15": "L-opcion",
+      "16": "U-opcion",
+      "17": "B-semanas_gestacion",
+      "18": "I-semanas_gestacion",
+      "19": "L-semanas_gestacion",
+      "20": "U-semanas_gestacion",
+      "0": "O"
+    },
+    "tags_to_ids": {
+      "B-fecha_nacimiento_bebe": 1,
+      "I-fecha_nacimiento_bebe": 2,
+      "L-fecha_nacimiento_bebe": 3,
+      "U-fecha_nacimiento_bebe": 4,
+      "B-mes_bebe": 5,
+      "I-mes_bebe": 6,
+      "L-mes_bebe": 7,
+      "U-mes_bebe": 8,
+      "B-nombre_b": 9,
+      "I-nombre_b": 10,
+      "L-nombre_b": 11,
+      "U-nombre_b": 12,
+      "B-opcion": 13,
+      "I-opcion": 14,
+      "L-opcion": 15,
+      "U-opcion": 16,
+      "B-semanas_gestacion": 17,
+      "I-semanas_gestacion": 18,
+      "L-semanas_gestacion": 19,
+      "U-semanas_gestacion": 20,
+      "O": 0
+    },
+    "num_tags": 21
+  }
+]

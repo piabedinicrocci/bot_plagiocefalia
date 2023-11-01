@@ -11,9 +11,9 @@ stories:
   - action: utter_pregunta_nombre_responsable
   - intent: nombre_responsable
     entities:
-    - nombre: pia
+    - nombre: belen
   - slot_was_set:
-    - nombre: pia
+    - nombre: belen
   - action: action_guardar_nombre_responsable #visito especialista?
   - intent: afirmacion
   - action: action_visito_especialista
@@ -21,10 +21,10 @@ stories:
     - visito_especialista: true
   - intent: nombre_neurocirujano
     entities:
-    - nombre_n: mariana
+    - nombre_n: mariana brey
   - slot_was_set:
-    - nombre_n: mariana
-  - action: utter_fotos_orden
+    - nombre_n: mariana brey
+  - action: action_guardar_nombre_neurocirujano #adjunta fotos documentos
     # - intent: fotos
   - action: utter_rta_fotos
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
@@ -34,7 +34,7 @@ stories:
     - nombre_b: ximena elgart
   - slot_was_set:
     - nombre_b: ximena elgart
-  - action: utter_pregunta_semanas_gestacion
+  - action: action_guardar_nombre_bebe #semanas gestacion?
   - intent: semanas_gestacion
     entities:
     - semanas_gestacion: '39'
@@ -69,8 +69,8 @@ stories:
   - action: action_visito_especialista
   - intent: nombre_neurocirujano
     entities:
-    - nombre_n: mariana
-  - action: utter_fotos_orden
+    - nombre_n: mariana brey
+  - action: action_guardar_nombre_neurocirujano #adjunta fotos documentos
   # - intent: fotos
   - action: utter_rta_fotos
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
@@ -78,7 +78,7 @@ stories:
   - intent: nombre_bebe
     entities:
     - nombre_b
-  - action: utter_pregunta_semanas_gestacion
+  - action: action_guardar_nombre_bebe #semanas gestacion?
   - intent: semanas_gestacion
     entities:
     - semanas_gestacion: '39'
@@ -138,7 +138,7 @@ stories:
   - intent: nombre_bebe
     entities:
     - nombre_b
-  - action: utter_pregunta_semanas_gestacion
+  - action: action_guardar_nombre_bebe #semanas gestacion?
   - intent: semanas_gestacion
     entities:
     - semanas_gestacion: '39'

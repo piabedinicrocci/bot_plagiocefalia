@@ -50,24 +50,20 @@ nlu:
     - soy ["pablo molina"](nombre)
     - soy ["belen"](nombre)
     - ["pia"](nombre)
-
-- regex: nombre
-  examples: |
-    - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]*"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$
-
 - intent: nombre_neurocirujano
   examples: |
-    - su nombre es dr [juan](nombre_n)
-    - me atendi con la dra [mariana](nombre_n)
-    - la doctora es [juana azurduy](nombre_n)
-    - el doctor es [francisco](nombre_n)
-    - su nombre era [marcos dacenzo](nombre_n)
-    - me atendio el dr [mauro castillo](nombre_n)
-    - [franchesca herrero](nombre_n)
-    - se llama [ricardo darin](nombre_n)
-    - el es [mauricio](nombre_n)
-    - ella es [susana](nombre_n)
-    - me atendi con la doctora [mariana](nombre_n)
+    - su nombre es dr ["juan fernandez"](nombre_n)
+    - me atendi con la dra ["mariana brey"](nombre_n)
+    - la doctora es ["juana azurduy"](nombre_n)
+    - el doctor es ["francisco shaw"](nombre_n)
+    - su nombre era ["marcos dacenzo"](nombre_n)
+    - me atendio el dr ["mauro castillo"](nombre_n)
+    - ["franchesca herrero"](nombre_n)
+    - se llama ["ricardo darin"](nombre_n)
+    - el es ["mauricio cormillot"](nombre_n)
+    - ella es ["susana lopardo"](nombre_n)
+    - me atendi con la doctora ["martina mendez"](nombre_n)
+    - [me atendi con ]{"entity": "nombre_n", "value": "\"mariana brey\""}la dra "mariana brey"
 - intent: edad_bebe
   examples: |
     - recien cumplio [1](mes_bebe) mes
@@ -77,14 +73,15 @@ nlu:
     - tiene [2](mes_bebe) meses
 - intent: nombre_bebe
   examples: |
-    - su nombre es [maria florencia rodriguez](nombre_b)
-    - mi bebe se llama [juan francisco herrero](nombre_b)
-    - [ximena elgart](nombre_b)
-    - [juan cruz cadile](nombre_b)
-    - se llama [delfina ferro](nombre_b)
-    - el es [jesus spinelli](nombre_b)
-    - ella es [sol echarri](nombre_b)
-    - mi bebe se llama [ximena elgart](nombre_b)
+    - su nombre es ["maria florencia rodriguez"](nombre_b)
+    - mi bebe se llama ["juan francisco herrero"](nombre_b)
+    - ["ximena elgart"](nombre_b)
+    - ["juan cruz cadile"](nombre_b)
+    - se llama ["delfina ferro"](nombre_b)
+    - el es ["jesus spinelli"](nombre_b)
+    - ella es ["sol echarri"](nombre_b)
+    - mi bebe se llama ["ximena elgart"](nombre_b)
+    - [mi bebe se llam]{"entity": "nombre_b", "value": "\"ximena elgart\""}a "ximena elgart"
 - intent: semanas_gestacion
   examples: |
     - geste durante [37](semanas_gestacion) semanas
@@ -93,6 +90,7 @@ nlu:
     - tuve [40](semanas_gestacion)
     - tuve [39](semanas_gestacion) semanas
     - [39](semanas_gestacion)
+    - tuve [39](semanas_gestacion) semanas
 - intent: fecha_nacimiento
   examples: |
     - mi bebe nacio el [8/2/2022](fecha_nacimiento_bebe)
@@ -100,11 +98,7 @@ nlu:
     - la fecha de nacimiento de mi bebe es [25/8/2021](fecha_nacimiento_bebe)
     - nacio el [13/4/2022](fecha_nacimiento_bebe)
     - mi bebe nacio el dia [8/2/2022](fecha_nacimiento_bebe)
-
-- regex: fecha_nacimiento_bebe
-  examples: |
-    - (\d{1,2})/(\d{1,2})/(\d{4})
-
+    - [8/2/2022][{"entity": "fecha_nacimiento_bebe"}, {"entity": "fecha_nacimiento_bebe"}]
 - intent: opcion_turno
   examples: |
     - numero de opcion [1](opcion)
@@ -115,3 +109,15 @@ nlu:
     - prefiero la [6](opcion)
     - puede ser la [7](opcion)
     - [8](opcion)
+- regex: fecha_nacimiento_bebe
+  examples: |
+    - (\d{1,2})/(\d{1,2})/(\d{4})
+- regex: nombre
+  examples: |
+    - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]*"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$
+- regex: nombre_b
+  examples: |
+    - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]+[a-zA-ZÁÉÍÓÚÑáéíóúñ]"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$
+- regex: nombre_n
+  examples: |
+    - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]+[a-zA-ZÁÉÍÓÚÑáéíóúñ]"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$

@@ -3,27 +3,34 @@ intents:
 - afirmacion
 - edad_bebe
 - fecha_nacimiento
+- fecha_nacimiento_bebe
 - fin
 - inicio
 - negacion
 - nombre_bebe
 - nombre_neurocirujano
 - nombre_responsable
-- semanas_gestacion
-- fecha_nacimiento_bebe
 - opcion_turno
-entities:
-- nombre_b
 - semanas_gestacion
-- nombre
+entities:
 - nombre_n
+- fecha_nacimiento_bebe
+- semanas_gestacion
+- nombre_b
+- nombre
 - visito_especialista
 - mes_bebe
 - tiene_os
 - opcion
 actions:
-- action_visito_especialista
+- utter_pregunta_os
 - action_tiene_os
+- utter_pregunta_fecha_nacimiento
+- utter_pregunta_nombre_bebe
+- action_guardar_nombre_neurocirujano
+- action_guardar_nombre_bebe
+- utter_rta_fotos
+- action_visito_especialista
 - action_finalizar_comunicacion
 - action_edad_bebe
 - action_mostrar_turnos
@@ -70,7 +77,6 @@ slots:
     mappings:
     - type: from_entity
       entity: opcion
-
 responses:
   utter_inicio:
   - text: |-
@@ -81,25 +87,14 @@ responses:
       ⏯️  https://youtu.be/XzTgTgPC7Xw 
       ⏯️  https://youtu.be/Oh0TF_ze-hI
   utter_pregunta_nombre_responsable:
-  - text: ¿Como te llamas?
-  - text: ¿Como es tu nombre?
-  utter_bifurcacion_especialista_visitado:
-  - condition:
-    - type: slot
-      name: visito_especialista
-      value: false
-    text: Entiendo. ¿Y residis en el AMBA?
-  - text: Entiendo. ¿Con que neurocirujano te atendiste?
-  utter_fotos_orden:
-  - text: Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊
+  - text: ¿Como te llamas? Ingresa tu nombre entre comillas dobles
+  - text: ¿Como es tu nombre? Ingresa tu nombre entre comillas dobles
   utter_no_reside_amba:
   - text: Solamente atendemos presencial en el AMBA, por lo que si se te dificulta acercarte envianos un audio explicando tu situación y un operador te atenderá a la brevedad
   utter_meses_bebe:
   - text: Y decime, cuantos meses tiene tu bebe?
   utter_pregunta_nombre_bebe:
-  - text: 'El nombre completo de tu bebe: '
-  utter_pregunta_semanas_gestacion:
-  - text: 'Las semanas de gestación de tu bebé: '
+  - text: 'El nombre completo de tu bebe (Ingresa su nombre completo entre comillas dobles): '
   utter_pregunta_fecha_nacimiento:
   - text: La fecha de nacimiento de {nombre_b}. Utiliza el formato dd/mm/aaaa
   utter_rta_fotos:

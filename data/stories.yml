@@ -9,32 +9,32 @@ stories:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
-  - intent: nombre_responsable
+  - intent: nombre
     entities:
-    - nombre: belen
+    - nombre
   - slot_was_set:
-    - nombre: belen
-  - action: action_guardar_nombre_responsable #visito especialista?
+    - nombre
+  - action: action_guardar_nombre #visito especialista?
   - intent: afirmacion
   - action: action_visito_especialista
   - slot_was_set:
     - visito_especialista: true
-  - intent: nombre_neurocirujano
+  - intent: nombre
     entities:
-    - nombre_n: mariana brey
+    - nombre
   - slot_was_set:
-    - nombre_n: mariana brey
-  - action: action_guardar_nombre_neurocirujano #adjunta fotos documentos
+    - nombre
+  - action: action_guardar_nombre #adjunta fotos documentos
     # - intent: fotos
   - action: utter_rta_fotos
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
-  - intent: nombre_bebe
+  - intent: nombre
     entities:
-    - nombre_b: ximena elgart
+    - nombre
   - slot_was_set:
-    - nombre_b: ximena elgart
-  - action: action_guardar_nombre_bebe #semanas gestacion?
+    - nombre
+  - action: action_guardar_nombre #semanas gestacion?
   - intent: semanas_gestacion
     entities:
     - semanas_gestacion: '39'
@@ -61,24 +61,24 @@ stories:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
-  - intent: nombre_responsable
+  - intent: nombre
     entities:
     - nombre
-  - action: action_guardar_nombre_responsable #visito especialista?
+  - action: action_guardar_nombre #visito especialista?
   - intent: afirmacion
   - action: action_visito_especialista
-  - intent: nombre_neurocirujano
+  - intent: nombre
     entities:
-    - nombre_n: mariana brey
-  - action: action_guardar_nombre_neurocirujano #adjunta fotos documentos
+    - nombre
+  - action: action_guardar_nombre #adjunta fotos documentos
   # - intent: fotos
   - action: utter_rta_fotos
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
-  - intent: nombre_bebe
+  - intent: nombre
     entities:
-    - nombre_b
-  - action: action_guardar_nombre_bebe #semanas gestacion?
+    - nombre
+  - action: action_guardar_nombre #semanas gestacion?
   - intent: semanas_gestacion
     entities:
     - semanas_gestacion: '39'
@@ -103,10 +103,10 @@ stories:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
-  - intent: nombre_responsable
+  - intent: nombre
     entities:
     - nombre
-  - action: action_guardar_nombre_responsable #visito especialista?
+  - action: action_guardar_nombre #visito especialista?
   - intent: negacion
   - action: action_visito_especialista #reside amba?
   - intent: negacion
@@ -121,10 +121,10 @@ stories:
   - intent: inicio
   - action: utter_inicio
   - action: utter_pregunta_nombre_responsable
-  - intent: nombre_responsable
+  - intent: nombre
     entities:
     - nombre
-  - action: action_guardar_nombre_responsable #visito especialista?
+  - action: action_guardar_nombre #visito especialista?
   - intent: negacion
   - action: action_visito_especialista #reside amba?
   - intent: afirmacion
@@ -135,10 +135,10 @@ stories:
   - action: action_edad_bebe
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
-  - intent: nombre_bebe
+  - intent: nombre
     entities:
-    - nombre_b
-  - action: action_guardar_nombre_bebe #semanas gestacion?
+    - nombre
+  - action: action_guardar_nombre #semanas gestacion?
   - intent: semanas_gestacion
     entities:
     - semanas_gestacion: '39'

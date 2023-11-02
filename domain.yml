@@ -7,16 +7,12 @@ intents:
 - fin
 - inicio
 - negacion
-- nombre_bebe
-- nombre_neurocirujano
-- nombre_responsable
+- nombre
 - opcion_turno
 - semanas_gestacion
 entities:
-- nombre_n
 - fecha_nacimiento_bebe
 - semanas_gestacion
-- nombre_b
 - nombre
 - visito_especialista
 - mes_bebe
@@ -27,21 +23,18 @@ actions:
 - action_tiene_os
 - utter_pregunta_fecha_nacimiento
 - utter_pregunta_nombre_bebe
-- action_guardar_nombre_neurocirujano
-- action_guardar_nombre_bebe
 - utter_rta_fotos
 - action_visito_especialista
 - action_finalizar_comunicacion
 - action_edad_bebe
 - action_mostrar_turnos
 - action_confirmacion_turno
-- action_guardar_nombre_responsable
+- action_guardar_nombre
 slots:
   nombre:
     type: text
     mappings:
-    - type: from_entity
-      entity: nombre
+    - type: custom
   visito_especialista:
     type: bool
     initial_value: false
@@ -50,8 +43,7 @@ slots:
   nombre_n:
     type: text
     mappings:
-    - type: from_entity
-      entity: nombre_n
+    - type: custom
   mes_bebe:
     type: float
     mappings:
@@ -60,8 +52,7 @@ slots:
   nombre_b:
     type: text
     mappings:
-    - type: from_entity
-      entity: nombre_b
+    - type: custom
   semanas_gestacion:
     type: float
     mappings:

@@ -42,28 +42,12 @@ nlu:
     - no lo creo
     - no hay manera
     - no realmente
-- intent: nombre_responsable
+- intent: nombre
   examples: |
-    - mi nombre es ["pia"](nombre)
-    - me llamo ["martino ferrero"](nombre)
-    - ["matias fernandez"](nombre)
-    - soy ["pablo molina"](nombre)
-    - soy ["belen"](nombre)
-    - ["pia"](nombre)
-- intent: nombre_neurocirujano
-  examples: |
-    - su nombre es dr ["juan fernandez"](nombre_n)
-    - me atendi con la dra ["mariana brey"](nombre_n)
-    - la doctora es ["juana azurduy"](nombre_n)
-    - el doctor es ["francisco shaw"](nombre_n)
-    - su nombre era ["marcos dacenzo"](nombre_n)
-    - me atendio el dr ["mauro castillo"](nombre_n)
-    - ["franchesca herrero"](nombre_n)
-    - se llama ["ricardo darin"](nombre_n)
-    - el es ["mauricio cormillot"](nombre_n)
-    - ella es ["susana lopardo"](nombre_n)
-    - me atendi con la doctora ["martina mendez"](nombre_n)
-    - [me atendi con ]{"entity": "nombre_n", "value": "\"mariana brey\""}la dra "mariana brey"
+    - ["martino ferrero"](nombre)
+    - nombre ["pia bedini crocci"](nombre)
+    - llama ["martino ferrero"](nombre)
+    - es ["pia bedini crocci"](nombre)
 - intent: edad_bebe
   examples: |
     - recien cumplio [1](mes_bebe) mes
@@ -71,17 +55,6 @@ nlu:
     - [12](mes_bebe) meses
     - tiene [14](mes_bebe)
     - tiene [2](mes_bebe) meses
-- intent: nombre_bebe
-  examples: |
-    - su nombre es ["maria florencia rodriguez"](nombre_b)
-    - mi bebe se llama ["juan francisco herrero"](nombre_b)
-    - ["ximena elgart"](nombre_b)
-    - ["juan cruz cadile"](nombre_b)
-    - se llama ["delfina ferro"](nombre_b)
-    - el es ["jesus spinelli"](nombre_b)
-    - ella es ["sol echarri"](nombre_b)
-    - mi bebe se llama ["ximena elgart"](nombre_b)
-    - [mi bebe se llam]{"entity": "nombre_b", "value": "\"ximena elgart\""}a "ximena elgart"
 - intent: semanas_gestacion
   examples: |
     - geste durante [37](semanas_gestacion) semanas
@@ -115,9 +88,3 @@ nlu:
 - regex: nombre
   examples: |
     - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]*"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$
-- regex: nombre_b
-  examples: |
-    - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]+[a-zA-ZÁÉÍÓÚÑáéíóúñ]"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$
-- regex: nombre_n
-  examples: |
-    - ^"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]+[a-zA-ZÁÉÍÓÚÑáéíóúñ]"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$

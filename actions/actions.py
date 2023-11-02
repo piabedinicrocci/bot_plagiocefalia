@@ -161,51 +161,28 @@ class ActionConfirmacionTurno(Action):
             dispatcher.utter_message(text=str("Perdón, ingresaste una opción inválida, por favor intentalo devuelta y asegurate que el número de opción esté en el listado"))
         return []
 
-class ActionGuardarNombreResponsable(Action):
-    def name(self) -> Text:
-        return "action_guardar_nombre_responsable"
+class ActionGuardarNombre(Action):
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+     def name(self) -> Text:
+         return "action_guardar_nombre"
+
+     def run(self, dispatcher: CollectingDispatcher,
+             tracker: Tracker,
+             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         nombre_con_comillas = next(tracker.get_latest_entity_values("nombre"),None)
-        dispatcher.utter_message(f"{nombre_con_comillas}")
-        if nombre_con_comillas:
-            nombre_sin_comillas = nombre_con_comillas.replace('"', '')  # Elimina las comillas dobles
-            dispatcher.utter_message(f"Bienvenid@ {nombre_sin_comillas}" + "!​ ¿Ya has visitado un especialista craneal?")
+        nombre_sin_comillas = nombre_con_comillas.replace('"', '')
+        ultima_accion_completada = None
+        for event in reversed(tracker.events):
+            if event.get("event") == "action" and event.get("name") != "action_guardar_nombre" and (event.get("name") == 'utter_pregunta_nombre_responsable' or event.get("name") == 'action_visito_especialista' or event.get("name") == 'utter_pregunta_nombre_bebe'):
+                ultima_accion_completada = event.get("name")
+                break
+        if (ultima_accion_completada == 'utter_pregunta_nombre_responsable'):
+            dispatcher.utter_message(text=str(f"Bienvenid@ {nombre_sin_comillas}" + "!​ ¿Ya has visitado un especialista craneal?"))
             return [SlotSet("nombre", nombre_sin_comillas)]
-        else:
-            dispatcher.utter_message("No has proporcionado un nombre R")
-            return []
-
-class ActionGuardarNombreNeurocirujano(Action):
-    def name(self) -> Text:
-        return "action_guardar_nombre_neurocirujano"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        nombre_con_comillas = next(tracker.get_latest_entity_values("nombre_n"),None)
-        if nombre_con_comillas:
-            nombre_sin_comillas = nombre_con_comillas.replace('"', '')  # Elimina las comillas dobles
-            dispatcher.utter_message(f"Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊")
+        elif (ultima_accion_completada == 'action_visito_especialista'):
+            dispatcher.utter_message(text=str("Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊"))
             return [SlotSet("nombre_n", nombre_sin_comillas)]
-        else:
-            dispatcher.utter_message("No has proporcionado un nombre N")
-            return []
-        
-class ActionGuardarNombreBebe(Action):
-    def name(self) -> Text:
-        return "action_guardar_nombre_bebe"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        nombre_con_comillas = next(tracker.get_latest_entity_values("nombre_b"),None)
-        if nombre_con_comillas:
-            nombre_sin_comillas = nombre_con_comillas.replace('"', '')  # Elimina las comillas dobles
-            dispatcher.utter_message(f"Las semanas de gestación de tu bebé: ")
+        elif (ultima_accion_completada == 'utter_pregunta_nombre_bebe'):
+            dispatcher.utter_message(text=str(f"Qué lindo nombre! Y cuántas semanas de gestación tiene {nombre_sin_comillas}?: "))
             return [SlotSet("nombre_b", nombre_sin_comillas)]
-        else:
-            dispatcher.utter_message("No has proporcionado un nombre B")
-            return []
+        return []

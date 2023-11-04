@@ -62,8 +62,6 @@ nlu:
     - [39](semanas_gestacion) semanas
     - tuve [40](semanas_gestacion)
     - tuve [39](semanas_gestacion) semanas
-    - [39](semanas_gestacion)
-    - tuve [39](semanas_gestacion) semanas
 - intent: fecha_nacimiento
   examples: |
     - mi bebe nacio el [8/2/2022](fecha_nacimiento_bebe)

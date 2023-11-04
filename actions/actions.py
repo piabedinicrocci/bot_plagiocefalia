@@ -183,6 +183,6 @@ class ActionGuardarNombre(Action):
             dispatcher.utter_message(text=str("Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊"))
             return [SlotSet("nombre_n", nombre_sin_comillas)]
         elif (ultima_accion_completada == 'utter_pregunta_nombre_bebe'):
-            dispatcher.utter_message(text=str(f"Qué lindo nombre! Y cuántas semanas de gestación tiene {nombre_sin_comillas}?: "))
+            dispatcher.utter_message(text=str(f"Qué lindo nombre! ¿Y con cuántas semanas de gestación nació {nombre_sin_comillas}? "))
             return [SlotSet("nombre_b", nombre_sin_comillas)]
         return []

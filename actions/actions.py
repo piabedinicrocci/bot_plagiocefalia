@@ -14,6 +14,14 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 from rasa_sdk.events import ActionExecutionRejected
 import os
+import xmlrpc.client as xmlrpclib
+from datetime import datetime
+
+db='odoo.plagiocefalia.com.ar'
+user='bot'
+pwd='bot2023'
+server='45.33.16.200'
+port='8069'    
 
 # class ActionHelloWorld(Action):
 #
@@ -93,7 +101,7 @@ class ActionEdadBebe(Action):
             dispatcher.utter_message(text=str("No entendí, ¿me repetis cuantos meses tiene tu bebe?"))
             return []
         
-class ActionVisitoEspecialista(Action):
+class ActionTieneObraSocial(Action):
 
      def name(self) -> Text:
          return "action_tiene_os"
@@ -120,19 +128,75 @@ class ActionMostrarTurnos(Action):
              tracker: Tracker,
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         dispatcher.utter_message(text=str("Para proceder con la agenda de un turno, seleccione alguna de las siguientes opciones: "))
-        ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
-        with open(ruta_completa, 'r') as archivo:
-            lista_opciones = archivo.readlines()
-            lista_opciones = [linea.strip() for linea in lista_opciones]
-        if lista_opciones is not None:
-            numero_opcion = 1
-            for opcion in lista_opciones:
-                dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: {opcion}"))
-                numero_opcion += 1
-            dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: Consulta telefonica con un operador"))
-        else:
-            lista_opciones[0] = str("Opcion 1: Consulta telefonica con un operador")
-        return []
+        #### manejo de archivo de ejemplo
+        # ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
+        # with open(ruta_completa, 'r') as archivo:
+        #     lista_opciones = archivo.readlines()
+        #     lista_opciones = [linea.strip() for linea in lista_opciones]
+        # if lista_opciones is not None:
+        #     numero_opcion = 1
+        #     for opcion in lista_opciones:
+        #         dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: {opcion}"))
+        #         numero_opcion += 1
+        #     dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: Consulta telefonica con un operador"))
+        # else:
+        #     lista_opciones[0] = str("Opcion 1: Consulta telefonica con un operador")
+        
+        #### conexiones
+        uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
+        print (uid)
+        odoo = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/object')
+        print (odoo)
+
+        #### traigo los datos de los slots para crear el paciente
+        nombre_mama = tracker.get_slot("nombre")
+        nombre_bebe = tracker.get_slot("nombre_b")
+        mes_bebe = tracker.get_slot("mes_bebe")
+        semanas_gestacion = int(tracker.get_slot("semanas_gestacion"))
+        #fecha_nacimiento = tracker.get_slot("fecha_nacimiento")
+        fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
+        fecha_nacimiento_obj = datetime.strptime(fecha_nacimiento, '%d-%m-%Y') # convierte a datetime
+        fecha_nacimiento_formateada = fecha_nacimiento_obj.strftime('%Y-%m-%d') # formatea el formato al requerido por odoo
+
+        #### creo un diccionario de paciente depediendo de la semana de gestacion (rnt o rnpt)
+        # if (semanas_gestacion >= 38) and (semanas_gestacion <= 41):
+        #     paciente = {
+        #         "nombre_madre": nombre_mama,
+        #         "firstname": nombre_bebe,
+        #         "age": mes_bebe,
+        #         "rnt": semanas_gestacion,
+        #         "birthdate_date": fecha_nacimiento
+        #     }
+        #     dispatcher.utter_message(text=str("entrado 1"))
+        # elif (semanas_gestacion < 38) and (semanas_gestacion >= 35):
+        #     paciente = {
+        #         "nombre_madre": nombre_mama,
+        #         "firstname": nombre_bebe,
+        #         "age": mes_bebe,
+        #         "rnpt": semanas_gestacion,
+        #         "birthdate_date": fecha_nacimiento
+        #     }
+        #     dispatcher.utter_message(text=str("entrado 2"))
+        # elif (semanas_gestacion < 35) or (semanas_gestacion > 41):
+        #     paciente = {
+        #         "nombre_madre": nombre_mama,
+        #         "firstname": nombre_bebe,
+        #         "age": mes_bebe,
+        #         "rnpt": 'Otro',
+        #         "birthdate_date": fecha_nacimiento
+        #     }
+        #     dispatcher.utter_message(text=str("entrado 3"))
+
+        #### creo el paciente en odoo
+        # id = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
+        # falta rnt o rnpt en este ejemplo de insercion de paciente:
+        id = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [{'nombre_madre': nombre_mama, 'firstname': nombre_bebe, 'age': mes_bebe, 'birthdate_date': fecha_nacimiento_formateada}])
+        print(id)
+        dispatcher.utter_message(text=str("creado"))
+
+        #### consultas para probar
+        # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
+        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
      
 class ActionConfirmacionTurno(Action):
 
@@ -170,6 +234,7 @@ class ActionGuardarNombre(Action):
              tracker: Tracker,
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         nombre_con_comillas = next(tracker.get_latest_entity_values("nombre"),None)
+        print(nombre_con_comillas)
         nombre_sin_comillas = nombre_con_comillas.replace('"', '')
         ultima_accion_completada = None
         for event in reversed(tracker.events):

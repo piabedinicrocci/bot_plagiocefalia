@@ -15,6 +15,7 @@ nlu:
     - ayuda
     - ayuda urgente
     - por favor ayuda
+    - holaa
 - intent: fin
   examples: |
     - chau
@@ -33,6 +34,7 @@ nlu:
     - claro
     - si!
     - es correcto
+    - sisi
 - intent: negacion
   examples: |
     - no
@@ -42,12 +44,17 @@ nlu:
     - no lo creo
     - no hay manera
     - no realmente
+    - nono
 - intent: nombre
   examples: |
     - ["martino ferrero"](nombre)
     - nombre ["pia bedini crocci"](nombre)
     - llama ["martino ferrero"](nombre)
     - es ["pia bedini crocci"](nombre)
+    - ["joaquin gonzalez"](nombre)
+    - ["ximena elgart"](nombre)
+    - ["martino ferrero"](nombre)
+    - ["ximena elgart"](nombre)
 - intent: edad_bebe
   examples: |
     - recien cumplio [1](mes_bebe) mes
@@ -55,6 +62,7 @@ nlu:
     - [12](mes_bebe) meses
     - tiene [14](mes_bebe)
     - tiene [2](mes_bebe) meses
+    - mi bebe tiene [8](mes_bebe) meses
 - intent: semanas_gestacion
   examples: |
     - geste durante [37](semanas_gestacion) semanas
@@ -62,6 +70,8 @@ nlu:
     - [39](semanas_gestacion) semanas
     - tuve [40](semanas_gestacion)
     - tuve [39](semanas_gestacion) semanas
+    - tuve [39](semanas_gestacion) semanas de gestacion
+    - tuve [39](semanas_gestacion) semanas de gestacion
 - intent: fecha_nacimiento
   examples: |
     - mi bebe nacio el [8/2/2022](fecha_nacimiento_bebe)
@@ -69,6 +79,8 @@ nlu:
     - la fecha de nacimiento de mi bebe es [25/8/2021](fecha_nacimiento_bebe)
     - nacio el [13/4/2022](fecha_nacimiento_bebe)
     - mi bebe nacio el dia [8/2/2022](fecha_nacimiento_bebe)
+    - [8/2/2022][{"entity": "fecha_nacimiento_bebe"}, {"entity": "fecha_nacimiento_bebe"}]
+    - [2/3/2021][{"entity": "fecha_nacimiento_bebe"}, {"entity": "fecha_nacimiento_bebe"}]
     - [8/2/2022][{"entity": "fecha_nacimiento_bebe"}, {"entity": "fecha_nacimiento_bebe"}]
 - intent: opcion_turno
   examples: |
@@ -80,6 +92,7 @@ nlu:
     - prefiero la [6](opcion)
     - puede ser la [7](opcion)
     - [8](opcion)
+    - [3](opcion)
 - regex: fecha_nacimiento_bebe
   examples: |
     - (\d{1,2})/(\d{1,2})/(\d{4})

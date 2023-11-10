@@ -145,11 +145,102 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - fecha_nacimiento
+    - fecha_nacimiento_bebe
   # termina flujo alternativo nombre bebe, gestacion, fecha nac
   # crear paciente y agendar turno en Odoo
   - action: action_mostrar_turnos
   - intent: opcion_turno
     entities:
     - opcion
+  - action: action_confirmacion_turno
+
+- story: interactive_story_1
+  steps:
+  - intent: inicio
+  - action: utter_inicio
+  - action: utter_pregunta_nombre_responsable
+  - intent: nombre
+    entities:
+    - nombre: '"martino ferrero"'
+  - action: action_guardar_nombre
+  - slot_was_set:
+    - nombre: martino ferrero
+  - intent: afirmacion
+  - action: action_visito_especialista
+  - slot_was_set:
+    - visito_especialista: true
+  - intent: nombre
+    entities:
+    - nombre: '"joaquin gonzalez"'
+  - action: action_guardar_nombre
+  - slot_was_set:
+    - nombre_n: joaquin gonzalez
+  - action: utter_rta_fotos
+  - action: utter_pregunta_nombre_bebe
+  - intent: nombre
+    entities:
+    - nombre: '"ximena elgart"'
+  - action: action_guardar_nombre
+  - slot_was_set:
+    - nombre_b: ximena elgart
+  - intent: semanas_gestacion
+    entities:
+    - semanas_gestacion: '39'
+  - slot_was_set:
+    - semanas_gestacion: '39'
+  - action: utter_pregunta_fecha_nacimiento
+  - intent: fecha_nacimiento
+    entities:
+    - fecha_nacimiento_bebe: 2/3/2021
+    - fecha_nacimiento_bebe: 2/3/2021
+  - action: action_tiene_os
+
+- story: interactive_story_1
+  steps:
+  - intent: inicio
+  - action: utter_inicio
+  - action: utter_pregunta_nombre_responsable
+  - intent: nombre
+    entities:
+    - nombre: '"martino ferrero"'
+  - action: action_guardar_nombre
+  - slot_was_set:
+    - nombre: martino ferrero
+  - intent: negacion
+  - action: action_visito_especialista
+  - slot_was_set:
+    - visito_especialista: false
+  - intent: afirmacion
+  - action: utter_meses_bebe
+  - intent: edad_bebe
+    entities:
+    - mes_bebe: '8'
+  - slot_was_set:
+    - mes_bebe: '8'
+  - action: action_edad_bebe
+  - slot_was_set:
+    - mes_bebe: 8.0
+  - action: utter_pregunta_nombre_bebe
+  - intent: nombre
+    entities:
+    - nombre: '"ximena elgart"'
+  - action: action_guardar_nombre
+  - slot_was_set:
+    - nombre_b: ximena elgart
+  - intent: semanas_gestacion
+    entities:
+    - semanas_gestacion: '39'
+  - slot_was_set:
+    - semanas_gestacion: '39'
+  - action: utter_pregunta_fecha_nacimiento
+  - intent: fecha_nacimiento
+    entities:
+    - fecha_nacimiento_bebe: 8/2/2022
+    - fecha_nacimiento_bebe: 8/2/2022
+  - action: action_mostrar_turnos
+  - intent: opcion_turno
+    entities:
+    - opcion: '3'
+  - slot_was_set:
+    - opcion: '3'
   - action: action_confirmacion_turno

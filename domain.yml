@@ -11,25 +11,28 @@ intents:
 - opcion_turno
 - semanas_gestacion
 entities:
-- fecha_nacimiento_bebe
 - semanas_gestacion
 - nombre
-- visito_especialista
 - mes_bebe
-- tiene_os
+- fecha_nacimiento_bebe
 - opcion
+- visito_especialista
+- tiene_os
 actions:
-- utter_pregunta_os
+- action_confirmacion_turno
+- action_edad_bebe
+- action_finalizar_comunicacion
+- action_guardar_nombre
+- action_mostrar_turnos
 - action_tiene_os
+- action_visito_especialista
+- utter_inicio
+- utter_meses_bebe
 - utter_pregunta_fecha_nacimiento
 - utter_pregunta_nombre_bebe
+- utter_pregunta_nombre_responsable
+- utter_pregunta_os
 - utter_rta_fotos
-- action_visito_especialista
-- action_finalizar_comunicacion
-- action_edad_bebe
-- action_mostrar_turnos
-- action_confirmacion_turno
-- action_guardar_nombre
 slots:
   nombre:
     type: text

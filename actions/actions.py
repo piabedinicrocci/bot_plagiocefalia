@@ -203,17 +203,43 @@ class ActionMostrarTurnos(Action):
             }
 
         #### creo el paciente en odoo
-        id = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
-        print(id)
+        id_paciente = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
         # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [{'nombre_madre': nombre_mama, 'firstname': nombre_bebe, 'birthdate_date': fecha_nacimiento_formateada}])) #falta rnt o rnpt en este ejemplo de insercion de paciente
-        dispatcher.utter_message(text=str("creado"))
-        id_a_buscar = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]], {'limit': 1})
-        print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [id_a_buscar]))
+        print(id_paciente)
+        dispatcher.utter_message(text=str("creado paciente"))
 
-        #### consultas para probar
+        # #### compruebo si el paciente se creó buscando por su id
+        # id_a_buscar = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]], {'limit': 1})
+        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [id_a_buscar]))
+
+        #### consulta pacientes
         # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
         # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
 
+        #### NO - consulta turnos calendario
+        # id_turnos = odoo.execute_kw(db, uid, pwd, 'calendar.event', 'search', [[]], {'limit': 5})
+        # print(odoo.execute_kw(db, uid, pwd, 'calendar.event', 'read', [id_turnos]))
+
+        #### consulta turnos agenda
+        id_turnos = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[]], {'limit': 1})
+        print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_turnos]))
+
+        ### creo un diccionario de turno
+        turno = {
+            "paciente": nombre_completo_bebe,
+            "name": '?????',
+            "motivo": '1 VEZ',
+            "medico": 'Silvina Romero',
+            "start": '2023-11-17 10:00:00',
+            "stop": '2023-11-17 10:30:00',
+            "display_time": '17/11/2023 at (07:00:00 To 07:30:00) (America/Buenos_Aires)',
+            "allday": False,
+        }
+
+        #### creo el turno en odoo
+        id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
+        print(id_turno)
+        dispatcher.utter_message(text=str("creado turno"))
         
      
 class ActionConfirmacionTurno(Action):

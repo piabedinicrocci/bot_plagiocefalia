@@ -159,44 +159,44 @@ class ActionMostrarTurnos(Action):
         fecha_nacimiento_formateada = fecha_nacimiento_obj.strftime('%Y-%m-%d') # formatea el formato al requerido por odoo
 
         #### creo un diccionario de paciente depediendo de la semana de gestacion (rnt o rnpt)
-        # if (semanas_gestacion >= 38) and (semanas_gestacion <= 41):
-        #     paciente = {
-        #         "nombre_madre": nombre_mama,
-        #         "firstname": nombre_bebe,
-        #         "age": mes_bebe,
-        #         "rnt": semanas_gestacion,
-        #         "birthdate_date": fecha_nacimiento
-        #     }
-        #     dispatcher.utter_message(text=str("entrado 1"))
-        # elif (semanas_gestacion < 38) and (semanas_gestacion >= 35):
-        #     paciente = {
-        #         "nombre_madre": nombre_mama,
-        #         "firstname": nombre_bebe,
-        #         "age": mes_bebe,
-        #         "rnpt": semanas_gestacion,
-        #         "birthdate_date": fecha_nacimiento
-        #     }
-        #     dispatcher.utter_message(text=str("entrado 2"))
-        # elif (semanas_gestacion < 35) or (semanas_gestacion > 41):
-        #     paciente = {
-        #         "nombre_madre": nombre_mama,
-        #         "firstname": nombre_bebe,
-        #         "age": mes_bebe,
-        #         "rnpt": 'Otro',
-        #         "birthdate_date": fecha_nacimiento
-        #     }
-        #     dispatcher.utter_message(text=str("entrado 3"))
+        if (semanas_gestacion >= 38) and (semanas_gestacion <= 41):
+            paciente = {
+                "nombre_madre": nombre_mama,
+                "firstname": nombre_bebe,
+                # "age": mes_bebe,
+                # "rnt": semanas_gestacion,
+                "birthdate_date": fecha_nacimiento_formateada
+            }
+        elif (semanas_gestacion < 38) and (semanas_gestacion >= 35):
+            paciente = {
+                "nombre_madre": nombre_mama,
+                "firstname": nombre_bebe,
+                # "age": mes_bebe,
+                # "rnpt": semanas_gestacion,
+                "birthdate_date": fecha_nacimiento_formateada
+            }
+        elif (semanas_gestacion < 35) or (semanas_gestacion > 41):
+            paciente = {
+                "nombre_madre": nombre_mama,
+                "firstname": nombre_bebe,
+                # "age": mes_bebe,
+                # "rnpt": 'Otro',
+                "birthdate_date": fecha_nacimiento_formateada
+            }
 
         #### creo el paciente en odoo
-        # id = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
-        # falta rnt o rnpt en este ejemplo de insercion de paciente:
-        id = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [{'nombre_madre': nombre_mama, 'firstname': nombre_bebe, 'age': mes_bebe, 'birthdate_date': fecha_nacimiento_formateada}])
+        id = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
         print(id)
+        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [{'nombre_madre': nombre_mama, 'firstname': nombre_bebe, 'birthdate_date': fecha_nacimiento_formateada}])) #falta rnt o rnpt en este ejemplo de insercion de paciente
         dispatcher.utter_message(text=str("creado"))
+        id_a_buscar = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]], {'limit': 1})
+        print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [id_a_buscar]))
 
         #### consultas para probar
         # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
         # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
+
+        
      
 class ActionConfirmacionTurno(Action):
 
@@ -234,7 +234,6 @@ class ActionGuardarNombre(Action):
              tracker: Tracker,
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         nombre_con_comillas = next(tracker.get_latest_entity_values("nombre"),None)
-        print(nombre_con_comillas)
         nombre_sin_comillas = nombre_con_comillas.replace('"', '')
         ultima_accion_completada = None
         for event in reversed(tracker.events):

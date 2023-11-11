@@ -16,6 +16,7 @@ nlu:
     - ayuda urgente
     - por favor ayuda
     - holaa
+    - ["mariana molina"](nombre)
 - intent: fin
   examples: |
     - chau
@@ -53,7 +54,7 @@ nlu:
     - es ["pia bedini crocci"](nombre)
     - ["joaquin gonzalez"](nombre)
     - ["ximena elgart"](nombre)
-    - ["martino ferrero"](nombre)
+    - ["pia bedini"](nombre)
     - ["ximena elgart"](nombre)
 - intent: edad_bebe
   examples: |
@@ -71,7 +72,7 @@ nlu:
     - tuve [40](semanas_gestacion)
     - tuve [39](semanas_gestacion) semanas
     - tuve [39](semanas_gestacion) semanas de gestacion
-    - tuve [39](semanas_gestacion) semanas de gestacion
+    - [40](semanas_gestacion) semanas
 - intent: fecha_nacimiento
   examples: |
     - mi bebe nacio el [8/2/2022](fecha_nacimiento_bebe)
@@ -81,7 +82,7 @@ nlu:
     - mi bebe nacio el dia [8/2/2022](fecha_nacimiento_bebe)
     - [8/2/2022][{"entity": "fecha_nacimiento_bebe"}, {"entity": "fecha_nacimiento_bebe"}]
     - [2/3/2021][{"entity": "fecha_nacimiento_bebe"}, {"entity": "fecha_nacimiento_bebe"}]
-    - [8/2/2022][{"entity": "fecha_nacimiento_bebe"}, {"entity": "fecha_nacimiento_bebe"}]
+    - [8-2-2022](fecha_nacimiento_bebe)
 - intent: opcion_turno
   examples: |
     - numero de opcion [1](opcion)

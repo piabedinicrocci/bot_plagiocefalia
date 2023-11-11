@@ -11,39 +11,39 @@ stories:
   - action: utter_pregunta_nombre_responsable
   - intent: nombre
     entities:
-    - nombre
-  - slot_was_set:
-    - nombre
+    - nombre: '"pia bedini"'
   - action: action_guardar_nombre #visito especialista?
+  - slot_was_set:
+    - nombre: pia bedini
   - intent: afirmacion
-  - action: action_visito_especialista
+  - action: action_visito_especialista 
   - slot_was_set:
     - visito_especialista: true
-  - intent: nombre
+  - intent: inicio
     entities:
-    - nombre
-  - slot_was_set:
-    - nombre
+    - nombre: '"mariana molina"'
   - action: action_guardar_nombre #adjunta fotos documentos
-    # - intent: fotos
+  - slot_was_set:
+    - nombre_n: mariana molina
+  # - intent: fotos
   - action: utter_rta_fotos
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
   - intent: nombre
     entities:
-    - nombre
-  - slot_was_set:
-    - nombre
+    - nombre: '"ximena elgart"'
   - action: action_guardar_nombre #semanas gestacion?
+  - slot_was_set:
+    - nombre_b: ximena elgart
   - intent: semanas_gestacion
     entities:
-    - semanas_gestacion: '39'
+    - semanas_gestacion: '40'
   - slot_was_set:
-    - semanas_gestacion: '39'
+    - semanas_gestacion: '40'
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - fecha_nacimiento
+    - fecha_nacimiento_bebe: 8-2-2022
   # termina flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_os
   - intent: negacion
@@ -244,3 +244,4 @@ stories:
   - slot_was_set:
     - opcion: '3'
   - action: action_confirmacion_turno
+

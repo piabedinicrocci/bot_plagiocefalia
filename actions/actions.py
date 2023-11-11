@@ -149,8 +149,23 @@ class ActionMostrarTurnos(Action):
         print (odoo)
 
         #### traigo los datos de los slots para crear el paciente
-        nombre_mama = tracker.get_slot("nombre")
-        nombre_bebe = tracker.get_slot("nombre_b")
+        nombre_completo_mama = tracker.get_slot("nombre")
+        
+        nombre_completo_bebe = tracker.get_slot("nombre_b")
+        partes_nombre_bebe = nombre_completo_bebe.split(" ")
+        nombre_bebe = ""
+        apellido_bebe = ""
+        cantidad_partes_nombre_bebe = len(partes_nombre_bebe)
+        if (cantidad_partes_nombre_bebe > 0):
+            nombre_bebe = partes_nombre_bebe[0]
+            if (cantidad_partes_nombre_bebe == 2):
+                apellido_bebe = partes_nombre_bebe[1]
+            elif (cantidad_partes_nombre_bebe > 2):
+                nombre_bebe = nombre_bebe + " " + partes_nombre_bebe[1]
+                apellido_bebe = partes_nombre_bebe[2]
+                for i in range(3, cantidad_partes_nombre_bebe):
+                    apellido_bebe = apellido_bebe + " " + partes_nombre_bebe[i]
+
         mes_bebe = tracker.get_slot("mes_bebe")
         semanas_gestacion = int(tracker.get_slot("semanas_gestacion"))
         #fecha_nacimiento = tracker.get_slot("fecha_nacimiento")
@@ -161,24 +176,27 @@ class ActionMostrarTurnos(Action):
         #### creo un diccionario de paciente depediendo de la semana de gestacion (rnt o rnpt)
         if (semanas_gestacion >= 38) and (semanas_gestacion <= 41):
             paciente = {
-                "nombre_madre": nombre_mama,
+                "nombre_madre": nombre_completo_mama,
                 "firstname": nombre_bebe,
+                "lastname": apellido_bebe,
                 # "age": mes_bebe,
                 # "rnt": semanas_gestacion,
                 "birthdate_date": fecha_nacimiento_formateada
             }
         elif (semanas_gestacion < 38) and (semanas_gestacion >= 35):
             paciente = {
-                "nombre_madre": nombre_mama,
+                "nombre_madre": nombre_completo_mama,
                 "firstname": nombre_bebe,
+                "lastname": apellido_bebe,
                 # "age": mes_bebe,
                 # "rnpt": semanas_gestacion,
                 "birthdate_date": fecha_nacimiento_formateada
             }
         elif (semanas_gestacion < 35) or (semanas_gestacion > 41):
             paciente = {
-                "nombre_madre": nombre_mama,
+                "nombre_madre": nombre_completo_mama,
                 "firstname": nombre_bebe,
+                "lastname": apellido_bebe,
                 # "age": mes_bebe,
                 # "rnpt": 'Otro',
                 "birthdate_date": fecha_nacimiento_formateada

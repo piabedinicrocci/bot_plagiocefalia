@@ -179,7 +179,6 @@ class ActionMostrarTurnos(Action):
                 "nombre_madre": nombre_completo_mama,
                 "firstname": nombre_bebe,
                 "lastname": apellido_bebe,
-                # "age": mes_bebe,
                 # "rnt": semanas_gestacion,
                 "birthdate_date": fecha_nacimiento_formateada
             }
@@ -188,7 +187,6 @@ class ActionMostrarTurnos(Action):
                 "nombre_madre": nombre_completo_mama,
                 "firstname": nombre_bebe,
                 "lastname": apellido_bebe,
-                # "age": mes_bebe,
                 # "rnpt": semanas_gestacion,
                 "birthdate_date": fecha_nacimiento_formateada
             }
@@ -197,14 +195,12 @@ class ActionMostrarTurnos(Action):
                 "nombre_madre": nombre_completo_mama,
                 "firstname": nombre_bebe,
                 "lastname": apellido_bebe,
-                # "age": mes_bebe,
                 # "rnpt": 'Otro',
                 "birthdate_date": fecha_nacimiento_formateada
             }
 
         #### creo el paciente en odoo
         id_paciente = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
-        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [{'nombre_madre': nombre_mama, 'firstname': nombre_bebe, 'birthdate_date': fecha_nacimiento_formateada}])) #falta rnt o rnpt en este ejemplo de insercion de paciente
         print(id_paciente)
         dispatcher.utter_message(text=str("creado paciente"))
 
@@ -216,30 +212,27 @@ class ActionMostrarTurnos(Action):
         # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
         # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
 
-        #### NO - consulta turnos calendario
-        # id_turnos = odoo.execute_kw(db, uid, pwd, 'calendar.event', 'search', [[]], {'limit': 5})
-        # print(odoo.execute_kw(db, uid, pwd, 'calendar.event', 'read', [id_turnos]))
-
         #### consulta turnos agenda
-        id_turnos = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[]], {'limit': 1})
-        print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_turnos]))
+        # id_turnos = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[]], {'limit': 1})
+        # print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_turnos]))
 
-        ### creo un diccionario de turno
+        #### creo un diccionario de turno
         turno = {
-            "paciente": nombre_completo_bebe,
-            "name": '?????',
+            "partner_id": id_paciente, #id de paciente recien agregado
             "motivo": '1 VEZ',
-            "medico": 'Silvina Romero',
-            "start": '2023-11-17 10:00:00',
-            "stop": '2023-11-17 10:30:00',
-            "display_time": '17/11/2023 at (07:00:00 To 07:30:00) (America/Buenos_Aires)',
-            "allday": False,
+            "technician_id": 32, #id de silvina romero
+            "appointment_date": '2023-11-15 10:00:00', # la hora real es 3 horas menos
+            "appointment_stop_date": '2023-11-15 10:30:00', # la hora real es 3 horas menos
+            "partner_fecha_inicio_tratamiento": '2023-05-12' # va?
         }
 
         #### creo el turno en odoo
         id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
         print(id_turno)
         dispatcher.utter_message(text=str("creado turno"))
+
+        #### busco turnos asignados y tengo que hacer la negacion para ver los tiempos libres (ver filtrado horarios segun doctor)
+        #odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['is_company', '=', True]]])
         
      
 class ActionConfirmacionTurno(Action):

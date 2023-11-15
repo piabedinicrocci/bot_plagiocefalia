@@ -15,6 +15,7 @@ from rasa_sdk.events import SlotSet
 from rasa_sdk.events import ActionExecutionRejected
 import os
 import xmlrpc.client as xmlrpclib
+import locale
 from datetime import datetime, timedelta
 
 db='odoo.plagiocefalia.com.ar'
@@ -209,7 +210,7 @@ class ActionMostrarTurnos(Action):
         #### creo el paciente en odoo
         id_paciente = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
         # print(id_paciente)
-        dispatcher.utter_message(text=str("creado paciente"))
+        # dispatcher.utter_message(text=str("creado paciente"))
 
         # #### compruebo si el paciente se creó buscando por su id
         # id_a_buscar = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]], {'limit': 1})
@@ -255,8 +256,51 @@ class ActionMostrarTurnos(Action):
                 # Verificar si el turno está dentro del horario del médico
                 if medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin']:
                     fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
-                    dispatcher.utter_message(text=str(f"Opción {opcion}: ID: {turno['id']} - Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {fecha_inicio} - {fecha_fin}"))
+                    dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
+                    numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
+                    mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
+                    hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+                    dispatcher.utter_message(text=str(f"Opción {opcion}: Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia} {numero_dia} de {mes} a las {hora}hs"))
                     opcion += 1  # Incrementar el contador de opciones
+
+        if fechas_disponibles:
+                dispatcher.utter_message(text=str(f"Ingrese el número de opción del turno que desea seleccionar: "))
+                opcion_elegida = 4
+                if 1 <= opcion_elegida <= len(fechas_disponibles):
+                    turno_seleccionado = fechas_disponibles[opcion_elegida - 1]
+                    id_seleccionado, inicio_seleccionado, fin_seleccionado, medico_id_seleccionado = turno_seleccionado
+                    print(f"Ha seleccionado la opción {opcion_elegida}: ID: {id_seleccionado} - Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}")
+                    # Sumar 3 horas a las fechas seleccionadas
+                    inicio_seleccionado = (datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
+                    fin_seleccionado = (datetime.strptime(fin_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
+                    #### CREO UN DICCIONARIO DE TURNO ---------------------------------------------------------------------------------------
+                    turno = {
+                        "partner_id": id_paciente, #id de paciente recien agregado
+                        "motivo": '1 VEZ',
+                        "technician_id": medico_id_seleccionado,
+                        "appointment_date": inicio_seleccionado, # la hora real es 3 horas menos
+                        "appointment_stop_date": fin_seleccionado, # la hora real es 3 horas menos
+                    }
+                    #### CREO EL TURNO EN ODOO ----------------------------------------------------------------------------------------------
+                    id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
+                    # print(id_turno)
+                    # Restar 3 horas a las fechas seleccionadas
+                    inicio_seleccionado = (datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S') - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
+                    fin_seleccionado = (datetime.strptime(fin_seleccionado, '%Y-%m-%d %H:%M:%S') - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
+                    # Establecer la configuración regional a español
+                    locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
+                    dia= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%A')
+                    numero_dia= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%d')
+                    mes= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%B')
+                    hora = datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+                    if medico_id_seleccionado == 32:
+                        dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con la Neurocirujana Pediátrica la Dra. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
+                    else:
+                        dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con el Neurocirujano Pediátrico el Dr. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
+                else:
+                    print("Opción no válida. Por favor, ingrese un número de opción válido.")
+        else:
+            print("No hay turnos disponibles en el rango de la próxima semana.")
 
 
         #### TURNO HARDCODEADO
@@ -294,61 +338,66 @@ class ActionConfirmacionTurno(Action):
      def run(self, dispatcher: CollectingDispatcher,
              tracker: Tracker,
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        # opcion_seleccionada = float(next(tracker.get_latest_entity_values("opcion"),None))
-        # ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
-        # with open(ruta_completa, 'r') as archivo:
-        #     lista_opciones = archivo.readlines()
-        #     lista_opciones = [linea.strip() for linea in lista_opciones]
-        # cantidad_opciones = len(lista_opciones)
-        # if (opcion_seleccionada == cantidad_opciones+1): #esto es porque está la opción adicional de derivación a un operador
-        #     dispatcher.utter_message(text=str("Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
-        # elif(opcion_seleccionada > 0) and (opcion_seleccionada <= cantidad_opciones):
-        #     datos_turno = lista_opciones[int(opcion_seleccionada)-1].split(" - ")
-        #     fecha, horario, doctor, honorarios = datos_turno
-        #     posicion = fecha.rfind('d')-1
-        #     fecha_sin_anio = fecha[:posicion]
-        #     nombre_bebe = tracker.get_slot("nombre_b")
-        #     dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {fecha_sin_anio} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina https://youtu.be/wrfBgNa0shY"))
-        # else:
-        #     dispatcher.utter_message(text=str("Perdón, ingresaste una opción inválida, por favor intentalo devuelta y asegurate que el número de opción esté en el listado"))
-        # return []
-                    # Permitir al usuario elegir un turno con un médico específico
-        
-        nombre_completo_bebe = tracker.get_slot("nombre_b")
-
-        #### conexiones
-        uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
-        print (uid)
-        odoo = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/object')
-        print (odoo)
-
-        if fechas_disponibles:
-            dispatcher.utter_message(text=str(f"Ingrese el número de opción del turno que desea seleccionar: "))
-            opcion_elegida = int(next(tracker.get_latest_entity_values("opcion"),None))
-            if 1 <= opcion_elegida <= len(fechas_disponibles):
-                turno_seleccionado = fechas_disponibles[opcion_elegida - 1]
-                id_seleccionado, inicio_seleccionado, fin_seleccionado, medico_id_seleccionado = turno_seleccionado
-                print(f"Ha seleccionado la opción {opcion_elegida}: ID: {id_seleccionado} - Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}")
-                # Sumar 3 horas a las fechas seleccionadas
-                inicio_seleccionado = (datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
-                fin_seleccionado = (datetime.strptime(fin_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
-                #### CREO UN DICCIONARIO DE TURNO ---------------------------------------------------------------------------------------
-                turno = {
-                    "partner_id": id_paciente, #id de paciente recien agregado
-                    "motivo": '1 VEZ',
-                    "technician_id": medico_id_seleccionado,
-                    "appointment_date": inicio_seleccionado, # la hora real es 3 horas menos
-                    "appointment_stop_date": fin_seleccionado, # la hora real es 3 horas menos
-                }
-                #### CREO EL TURNO EN ODOO ----------------------------------------------------------------------------------------------
-                id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
-                # print(id_turno)
-                # dispatcher.utter_message(text=str(f"Ha seleccionado la opción {opcion_elegida}: ID: {id_seleccionado} - Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}"))
-                dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para la fecha {inicio_seleccionado} con el/la Neurocirujan@ Pediátric@ el Dr/Dra. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
-            else:
-                print("Opción no válida. Por favor, ingrese un número de opción válido.")
+        opcion_seleccionada = float(next(tracker.get_latest_entity_values("opcion"),None))
+        ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
+        with open(ruta_completa, 'r') as archivo:
+            lista_opciones = archivo.readlines()
+            lista_opciones = [linea.strip() for linea in lista_opciones]
+        cantidad_opciones = len(lista_opciones)
+        if (opcion_seleccionada == cantidad_opciones+1): #esto es porque está la opción adicional de derivación a un operador
+            dispatcher.utter_message(text=str("Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
+        elif(opcion_seleccionada > 0) and (opcion_seleccionada <= cantidad_opciones):
+            datos_turno = lista_opciones[int(opcion_seleccionada)-1].split(" - ")
+            fecha, horario, doctor, honorarios = datos_turno
+            posicion = fecha.rfind('d')-1
+            fecha_sin_anio = fecha[:posicion]
+            nombre_bebe = tracker.get_slot("nombre_b")
+            dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {fecha_sin_anio} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina https://youtu.be/wrfBgNa0shY"))
         else:
-            print("No hay turnos disponibles en el rango de la próxima semana.")
+            dispatcher.utter_message(text=str("Perdón, ingresaste una opción inválida, por favor intentalo devuelta y asegurate que el número de opción esté en el listado"))
+        return []
+        
+        # nombre_completo_bebe = tracker.get_slot("nombre_b")
+
+        # #### conexiones
+        # uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
+        # print (uid)
+        # odoo = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/object')
+        # print (odoo)
+
+        # if fechas_disponibles:
+        #     dispatcher.utter_message(text=str(f"Ingrese el número de opción del turno que desea seleccionar: "))
+        #     opcion_elegida = int(next(tracker.get_latest_entity_values("opcion"),None))
+        #     if 1 <= opcion_elegida <= len(fechas_disponibles):
+        #         turno_seleccionado = fechas_disponibles[opcion_elegida - 1]
+        #         id_seleccionado, inicio_seleccionado, fin_seleccionado, medico_id_seleccionado = turno_seleccionado
+        #         print(f"Ha seleccionado la opción {opcion_elegida}: ID: {id_seleccionado} - Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}")
+        #         # Sumar 3 horas a las fechas seleccionadas
+        #         inicio_seleccionado = (datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
+        #         fin_seleccionado = (datetime.strptime(fin_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
+        #         #### CREO UN DICCIONARIO DE TURNO ---------------------------------------------------------------------------------------
+        #         turno = {
+        #             "partner_id": id_paciente, #id de paciente recien agregado
+        #             "motivo": '1 VEZ',
+        #             "technician_id": medico_id_seleccionado,
+        #             "appointment_date": inicio_seleccionado, # la hora real es 3 horas menos
+        #             "appointment_stop_date": fin_seleccionado, # la hora real es 3 horas menos
+        #         }
+        #         #### CREO EL TURNO EN ODOO ----------------------------------------------------------------------------------------------
+        #         id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
+        #         # print(id_turno)
+        #         dia= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%A')
+        #         numero_dia= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%d')
+        #         mes= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%B')
+        #         hora = datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+        #         if medico_id_seleccionado == 32:
+        #             dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con la Neurocirujana Pediátrica la Dra. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
+        #         else:
+        #             dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con el Neurocirujano Pediátrico el Dr. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
+        #     else:
+        #         print("Opción no válida. Por favor, ingrese un número de opción válido.")
+        # else:
+        #     print("No hay turnos disponibles en el rango de la próxima semana.")
 
 class ActionGuardarNombre(Action):
 

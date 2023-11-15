@@ -237,13 +237,18 @@ class ActionMostrarTurnos(Action):
         # CORREGIR CONSULTA: ESTA DEVOLVIENDO LOS ESPACIOS OCUPADOS CON TURNOS EN VEZ DE LOS ESPACIOS LIBRES
         turno_ids = odoo.execute_kw(
             db, uid, pwd, 'appointment.appointment', 'search',
-            [[('appointment_date', '>=', start_date.strftime('%Y-%m-%d %H:%M:%S')),
-            ('appointment_date', '<', end_date.strftime('%Y-%m-%d %H:%M:%S'))]],
-            {'limit': 10}
+            [[
+                ('appointment_date', '>=', start_date.strftime('%Y-%m-%d %H:%M:%S')),
+                ('appointment_date', '<', end_date.strftime('%Y-%m-%d %H:%M:%S'))
+            ]],
+            {'order': 'technician_id ASC, appointment_date ASC'}
         )
         # Imprimir los detalles de los turnos y médicos disponibles
         fechas_disponibles = []
         opcion = 1
+        medicos_procesados = []  # Conjunto para rastrear los médicos procesados
+        medico_ids = [31,32,33]
+
         if turno_ids:
             turnos_disponibles = odoo.execute_kw(
                 db, uid, pwd, 'appointment.appointment', 'read', [turno_ids],
@@ -252,21 +257,36 @@ class ActionMostrarTurnos(Action):
             for i, turno in enumerate(turnos_disponibles):
                 fecha_inicio = turno['appointment_date']
                 fecha_fin = turno['appointment_stop_date']
-                medico_id = turno['technician_id'][0]
-                # Verificar si el turno está dentro del horario del médico
-                if medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin']:
-                    fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
-                    dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
-                    numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
-                    mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
-                    hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
-                    dispatcher.utter_message(text=str(f"Opción {opcion}: Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia} {numero_dia} de {mes} a las {hora}hs"))
-                    opcion += 1  # Incrementar el contador de opciones
+                medico_id = int(turno['technician_id'][0]) if turno['technician_id'] else None
 
+                print(medico_id)
+                print(medico_ids)
+                print(medicos_procesados)
+
+                # Iterar sobre los médicos asociados a un turno
+                for medico_id in medico_ids:
+                    # Verificar si el médico ya ha sido procesado
+                    if medico_id in medicos_procesados:
+                        continue
+                    # Verificar si el turno está dentro del horario del médico
+                    if medico_id is not None and medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin']:
+                        fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
+                        dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
+                        numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
+                        mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
+                        hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+                        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia} {numero_dia} de {mes} a las {hora}hs"))
+                        opcion += 1 
+                        medicos_procesados.append(medico_id)
+                        break  # Romper el bucle interno después de agregar un turno para el médico
+        print(f"fechas disponibles: {fechas_disponibles}")                
         if fechas_disponibles:
+                dispatcher.utter_message(text=str(f"*Opción 4:* Consulta telefonica con un operador"))
                 dispatcher.utter_message(text=str(f"Ingrese el número de opción del turno que desea seleccionar: "))
-                opcion_elegida = 4
-                if 1 <= opcion_elegida <= len(fechas_disponibles):
+                opcion_elegida = 2
+                if opcion_elegida == 4:
+                    dispatcher.utter_message(text=str(f"Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
+                elif 1 <= opcion_elegida <= len(fechas_disponibles):
                     turno_seleccionado = fechas_disponibles[opcion_elegida - 1]
                     id_seleccionado, inicio_seleccionado, fin_seleccionado, medico_id_seleccionado = turno_seleccionado
                     print(f"Ha seleccionado la opción {opcion_elegida}: ID: {id_seleccionado} - Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}")

@@ -31,6 +31,8 @@ medicos = {
     33: {'nombre': 'Gaston Dech', 'dias': ['Monday'], 'inicio': '10:00:00', 'fin': '15:30:00'},
 }
 
+fechas_disponibles = []
+
 # class ActionHelloWorld(Action):
 #
 #     def name(self) -> Text:
@@ -131,6 +133,52 @@ class ActionMostrarTurnos(Action):
 
      def name(self) -> Text:
          return "action_mostrar_turnos"
+     
+     def obtenerDiaEnCastellano(self, dia):
+        if dia == "Monday":
+            return "Lunes"
+        elif dia == "Tuesday":
+            return "Martes"
+        elif dia == "Wednesday":
+            return "Miércoles"
+        elif dia == "Thursday":
+            return "Jueves"
+        elif dia == "Friday":
+            return "Viernes"
+        elif dia == "Saturday":
+            return "Sábado"
+        elif dia == "Sunday":
+            return "Domingo"
+        else:
+            return "Dia invalido"
+        
+     def obtenerMesEnCastellano(self, mes):
+        if mes == "January":
+            return "Enero"
+        elif mes == "February":
+            return "Febrero"
+        elif mes == "March":
+            return "Marzo"
+        elif mes == "April":
+            return "Abril"
+        elif mes == "May":
+            return "Mayo"
+        elif mes == "June":
+            return "Junio"
+        elif mes == "July":
+            return "Julio"
+        elif mes == "August":
+            return "Agosto"
+        elif mes == "September":
+            return "Septiembre"
+        elif mes == "October":
+            return "Octubre"
+        elif mes == "November":
+            return "Noviembre"
+        elif mes == "December":
+            return "Diciembre"
+        else:
+            return "Mes invalido"
 
      def run(self, dispatcher: CollectingDispatcher,
              tracker: Tracker,
@@ -156,6 +204,105 @@ class ActionMostrarTurnos(Action):
         odoo = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/object')
         print (odoo)
 
+        #### consulta pacientes
+        # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
+        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
+
+        #### consulta turnos agenda
+        # id_turnos = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[]], {'limit': 1})
+        # print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_turnos]))
+
+        today = datetime.now()
+        # Calcular la fecha de inicio y fin de la próxima semana
+        start_date = today
+        end_date = today + timedelta(days=7)
+        # Consultar los turnos disponibles en el rango de una semana
+        # CORREGIR CONSULTA: ESTA DEVOLVIENDO LOS ESPACIOS OCUPADOS CON TURNOS EN VEZ DE LOS ESPACIOS LIBRES
+        turno_ids = odoo.execute_kw(
+            db, uid, pwd, 'appointment.appointment', 'search',
+            [[
+                ('appointment_date', '>=', start_date.strftime('%Y-%m-%d %H:%M:%S')),
+                ('appointment_date', '<', end_date.strftime('%Y-%m-%d %H:%M:%S'))
+            ]],
+            {'order': 'technician_id ASC, appointment_date ASC'}
+        )
+
+        opcion = 1
+        medicos_procesados = [] 
+        medico_ids = [31,32,33]
+
+        global fechas_disponibles
+
+        if turno_ids:
+            turnos_disponibles = odoo.execute_kw(
+                db, uid, pwd, 'appointment.appointment', 'read', [turno_ids],
+                {'fields': ['id', 'appointment_date', 'appointment_stop_date', 'technician_id']}
+            )
+            for i, turno in enumerate(turnos_disponibles):
+                fecha_inicio = turno['appointment_date']
+                fecha_fin = turno['appointment_stop_date']
+                medico_id = int(turno['technician_id'][0]) if turno['technician_id'] else None
+
+                print(medico_id)
+                print(medico_ids)
+                print(medicos_procesados)
+
+                # Iterar sobre los médicos asociados a un turno
+                for medico_id in medico_ids:
+                    # Verificar si el médico ya ha sido procesado
+                    if medico_id in medicos_procesados:
+                        continue
+                    # Verificar si el turno está dentro del horario del médico
+                    if medico_id is not None and medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin']:
+                        fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
+                        dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
+                        numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
+                        mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
+                        hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+                        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
+                        opcion += 1 
+                        medicos_procesados.append(medico_id)
+                        break  # Romper el bucle interno después de agregar un turno para el médico
+
+        #### TURNO HARDCODEADO
+        # turno = {
+        #     "partner_id": id_paciente, #id de paciente recien agregado
+        #     "motivo": '1 VEZ',
+        #     "technician_id": 32, # 32=id silvina romero y 33=gaston dech y 31=emanuel ortiz
+        #     "appointment_date": '2023-11-14 12:30:00', # la hora real es 3 horas menos
+        #     "appointment_stop_date": '2023-11-14 13:00:00', # la hora real es 3 horas menos
+        # }
+
+        # #### Borrar paciente
+        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'unlink', [[id]])
+        # # check if the deleted record is still in the database
+        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]])
+
+        # #### busco el id del paciente con el nombre = x
+        # id_paciente= odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['firstname', '=','ximena']]])
+        # print(f"el id del paciente X es: {id_paciente}")
+        # #### busco los ids de los turnos asociados al paciente = x
+        # id_turnoo= odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['partner_id', '=',id_paciente]]])
+        # print(f"el id del turno de X es: {id_turnoo}")
+        # #### busco todos los datos del turno que yo ingreso por el input
+        # id_a_consultar = int(input("Ingrese el id del turno por el cual quiere saber sus datos: "))
+        # id_medico= odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=',id_a_consultar]]])
+        # print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_medico]))
+
+
+     
+class ActionConfirmacionTurno(Action):
+
+     def name(self) -> Text:
+         return "action_confirmacion_turno"
+
+     def run(self, dispatcher: CollectingDispatcher,
+             tracker: Tracker,
+             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
+        odoo = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/object')
+
         #### traigo los datos de los slots para crear el paciente
         nombre_completo_mama = tracker.get_slot("nombre")
         
@@ -174,7 +321,7 @@ class ActionMostrarTurnos(Action):
                 for i in range(3, cantidad_partes_nombre_bebe):
                     apellido_bebe = apellido_bebe + " " + partes_nombre_bebe[i]
 
-        mes_bebe = tracker.get_slot("mes_bebe")
+        ##aca se obtenia la cantidad de meses del bebe pero no se usaba nunca
         semanas_gestacion = int(tracker.get_slot("semanas_gestacion"))
         #fecha_nacimiento = tracker.get_slot("fecha_nacimiento")
         fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
@@ -212,69 +359,11 @@ class ActionMostrarTurnos(Action):
         # print(id_paciente)
         # dispatcher.utter_message(text=str("creado paciente"))
 
-        #### consulta pacientes
-        # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
-        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
-
-        #### consulta turnos agenda
-        # id_turnos = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[]], {'limit': 1})
-        # print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_turnos]))
-
-        today = datetime.now()
-        # Calcular la fecha de inicio y fin de la próxima semana
-        start_date = today
-        end_date = today + timedelta(days=7)
-        # Consultar los turnos disponibles en el rango de una semana
-        # CORREGIR CONSULTA: ESTA DEVOLVIENDO LOS ESPACIOS OCUPADOS CON TURNOS EN VEZ DE LOS ESPACIOS LIBRES
-        turno_ids = odoo.execute_kw(
-            db, uid, pwd, 'appointment.appointment', 'search',
-            [[
-                ('appointment_date', '>=', start_date.strftime('%Y-%m-%d %H:%M:%S')),
-                ('appointment_date', '<', end_date.strftime('%Y-%m-%d %H:%M:%S'))
-            ]],
-            {'order': 'technician_id ASC, appointment_date ASC'}
-        )
-
-        fechas_disponibles = []
-        opcion = 1
-        medicos_procesados = [] 
-        medico_ids = [31,32,33]
-
-        if turno_ids:
-            turnos_disponibles = odoo.execute_kw(
-                db, uid, pwd, 'appointment.appointment', 'read', [turno_ids],
-                {'fields': ['id', 'appointment_date', 'appointment_stop_date', 'technician_id']}
-            )
-            for i, turno in enumerate(turnos_disponibles):
-                fecha_inicio = turno['appointment_date']
-                fecha_fin = turno['appointment_stop_date']
-                medico_id = int(turno['technician_id'][0]) if turno['technician_id'] else None
-
-                print(medico_id)
-                print(medico_ids)
-                print(medicos_procesados)
-
-                # Iterar sobre los médicos asociados a un turno
-                for medico_id in medico_ids:
-                    # Verificar si el médico ya ha sido procesado
-                    if medico_id in medicos_procesados:
-                        continue
-                    # Verificar si el turno está dentro del horario del médico
-                    if medico_id is not None and medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin']:
-                        fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
-                        dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
-                        numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
-                        mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
-                        hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
-                        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia} {numero_dia} de {mes} a las {hora}hs"))
-                        opcion += 1 
-                        medicos_procesados.append(medico_id)
-                        break  # Romper el bucle interno después de agregar un turno para el médico
         print(f"fechas disponibles: {fechas_disponibles}")                
         if fechas_disponibles:
                 dispatcher.utter_message(text=str(f"*Opción 4:* Consulta telefonica con un operador"))
                 dispatcher.utter_message(text=str(f"Ingrese el número de opción del turno que desea seleccionar: "))
-                opcion_elegida = 2
+                opcion_elegida = int(next(tracker.get_latest_entity_values("opcion"),None))
                 if opcion_elegida == 4:
                     dispatcher.utter_message(text=str(f"Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
                 elif 1 <= opcion_elegida <= len(fechas_disponibles):
@@ -319,41 +408,6 @@ class ActionMostrarTurnos(Action):
             # chequea que se haya eliminado correctamente:
             odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=', id_turno_a_borrar]]])
 
-        #### TURNO HARDCODEADO
-        # turno = {
-        #     "partner_id": id_paciente, #id de paciente recien agregado
-        #     "motivo": '1 VEZ',
-        #     "technician_id": 32, # 32=id silvina romero y 33=gaston dech y 31=emanuel ortiz
-        #     "appointment_date": '2023-11-14 12:30:00', # la hora real es 3 horas menos
-        #     "appointment_stop_date": '2023-11-14 13:00:00', # la hora real es 3 horas menos
-        # }
-
-        # #### Borrar paciente
-        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'unlink', [[id]])
-        # # check if the deleted record is still in the database
-        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]])
-
-        # #### busco el id del paciente con el nombre = x
-        # id_paciente= odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['firstname', '=','ximena']]])
-        # print(f"el id del paciente X es: {id_paciente}")
-        # #### busco los ids de los turnos asociados al paciente = x
-        # id_turnoo= odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['partner_id', '=',id_paciente]]])
-        # print(f"el id del turno de X es: {id_turnoo}")
-        # #### busco todos los datos del turno que yo ingreso por el input
-        # id_a_consultar = int(input("Ingrese el id del turno por el cual quiere saber sus datos: "))
-        # id_medico= odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=',id_a_consultar]]])
-        # print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_medico]))
-
-
-     
-class ActionConfirmacionTurno(Action):
-
-     def name(self) -> Text:
-         return "action_confirmacion_turno"
-
-     def run(self, dispatcher: CollectingDispatcher,
-             tracker: Tracker,
-             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         opcion_seleccionada = float(next(tracker.get_latest_entity_values("opcion"),None))
         ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
         with open(ruta_completa, 'r') as archivo:

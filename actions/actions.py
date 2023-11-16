@@ -212,10 +212,6 @@ class ActionMostrarTurnos(Action):
         # print(id_paciente)
         # dispatcher.utter_message(text=str("creado paciente"))
 
-        # #### compruebo si el paciente se creó buscando por su id
-        # id_a_buscar = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]], {'limit': 1})
-        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [id_a_buscar]))
-
         #### consulta pacientes
         # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
         # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
@@ -224,11 +220,6 @@ class ActionMostrarTurnos(Action):
         # id_turnos = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[]], {'limit': 1})
         # print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_turnos]))
 
-
-
-
-
-        # Obtener la fecha actual
         today = datetime.now()
         # Calcular la fecha de inicio y fin de la próxima semana
         start_date = today
@@ -243,10 +234,10 @@ class ActionMostrarTurnos(Action):
             ]],
             {'order': 'technician_id ASC, appointment_date ASC'}
         )
-        # Imprimir los detalles de los turnos y médicos disponibles
+
         fechas_disponibles = []
         opcion = 1
-        medicos_procesados = []  # Conjunto para rastrear los médicos procesados
+        medicos_procesados = [] 
         medico_ids = [31,32,33]
 
         if turno_ids:
@@ -303,7 +294,6 @@ class ActionMostrarTurnos(Action):
                     }
                     #### CREO EL TURNO EN ODOO ----------------------------------------------------------------------------------------------
                     id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
-                    # print(id_turno)
                     # Restar 3 horas a las fechas seleccionadas
                     inicio_seleccionado = (datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S') - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
                     fin_seleccionado = (datetime.strptime(fin_seleccionado, '%Y-%m-%d %H:%M:%S') - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
@@ -322,6 +312,12 @@ class ActionMostrarTurnos(Action):
         else:
             print("No hay turnos disponibles en el rango de la próxima semana.")
 
+        #### BORRAR TURNO DE MÁS
+        if id_turno:
+            id_turno_a_borrar= id_turno+1
+            odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'unlink', [[id_turno_a_borrar]])
+            # chequea que se haya eliminado correctamente:
+            odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=', id_turno_a_borrar]]])
 
         #### TURNO HARDCODEADO
         # turno = {
@@ -332,17 +328,17 @@ class ActionMostrarTurnos(Action):
         #     "appointment_stop_date": '2023-11-14 13:00:00', # la hora real es 3 horas menos
         # }
 
-        #### creo el turno en odoo
-        # id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
-        # print(id_turno)
-        # dispatcher.utter_message(text=str("creado turno"))
+        # #### Borrar paciente
+        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'unlink', [[id]])
+        # # check if the deleted record is still in the database
+        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]])
 
         # #### busco el id del paciente con el nombre = x
-        # id_paciente= odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['firstname', '=','Nazly Vanessa']]])
-        # print(f"el id del paciente Nazly Vanessa es: {id_paciente}")
+        # id_paciente= odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['firstname', '=','ximena']]])
+        # print(f"el id del paciente X es: {id_paciente}")
         # #### busco los ids de los turnos asociados al paciente = x
         # id_turnoo= odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['partner_id', '=',id_paciente]]])
-        # print(f"el id del turno de Nazly Vanessa es: {id_turnoo}")
+        # print(f"el id del turno de X es: {id_turnoo}")
         # #### busco todos los datos del turno que yo ingreso por el input
         # id_a_consultar = int(input("Ingrese el id del turno por el cual quiere saber sus datos: "))
         # id_medico= odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=',id_a_consultar]]])

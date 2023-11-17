@@ -44,6 +44,8 @@ stories:
   - intent: fecha_nacimiento
     entities:
     - fecha_nacimiento_bebe: 8-2-2022
+  - slot_was_set:
+    - fecha_nacimiento_bebe: 8-2-2022
   # termina flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_os
   - intent: negacion
@@ -85,7 +87,9 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - fecha_nacimiento
+    - fecha_nacimiento_bebe: 8-2-2022
+  - slot_was_set:
+    - fecha_nacimiento_bebe: 8-2-2022
   # termina flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_os
   - intent: afirmacion
@@ -145,7 +149,9 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - fecha_nacimiento_bebe
+    - fecha_nacimiento_bebe: 8-2-2022
+  - slot_was_set:
+    - fecha_nacimiento_bebe: 8-2-2022
   # termina flujo alternativo nombre bebe, gestacion, fecha nac
   # crear paciente y agendar turno en Odoo
   - action: action_mostrar_turnos
@@ -191,8 +197,9 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - fecha_nacimiento_bebe: 2/3/2021
-    - fecha_nacimiento_bebe: 2/3/2021
+    - fecha_nacimiento_bebe: 8-2-2022
+  - slot_was_set:
+    - fecha_nacimiento_bebe: 8-2-2022
   - action: action_tiene_os
 
 - story: interactive_story_1
@@ -235,8 +242,9 @@ stories:
   - action: utter_pregunta_fecha_nacimiento
   - intent: fecha_nacimiento
     entities:
-    - fecha_nacimiento_bebe: 8/2/2022
-    - fecha_nacimiento_bebe: 8/2/2022
+    - fecha_nacimiento_bebe: 8-2-2022
+  - slot_was_set:
+    - fecha_nacimiento_bebe: 8-2-2022
   - action: action_mostrar_turnos
   - intent: opcion_turno
     entities:

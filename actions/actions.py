@@ -184,20 +184,11 @@ class ActionMostrarTurnos(Action):
              tracker: Tracker,
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         dispatcher.utter_message(text=str("Para proceder con la agenda de un turno, seleccione alguna de las siguientes opciones: "))
-        #### manejo de archivo de ejemplo
-        # ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
-        # with open(ruta_completa, 'r') as archivo:
-        #     lista_opciones = archivo.readlines()
-        #     lista_opciones = [linea.strip() for linea in lista_opciones]
-        # if lista_opciones is not None:
-        #     numero_opcion = 1
-        #     for opcion in lista_opciones:
-        #         dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: {opcion}"))
-        #         numero_opcion += 1
-        #     dispatcher.utter_message(text=str(f"Opcion {numero_opcion}: Consulta telefonica con un operador"))
-        # else:
-        #     lista_opciones[0] = str("Opcion 1: Consulta telefonica con un operador")
-        
+
+        fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
+        [SlotSet("fecha_nacimiento_bebe", fecha_nacimiento)]
+        print(f"fecha nac en mostrar turnos: {fecha_nacimiento}")
+
         #### conexiones
         uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
         print (uid)
@@ -263,6 +254,7 @@ class ActionMostrarTurnos(Action):
                         opcion += 1 
                         medicos_procesados.append(medico_id)
                         break  # Romper el bucle interno después de agregar un turno para el médico
+            dispatcher.utter_message(text=str(f"*Opción 4:* Consulta telefonica con un operador"))
 
         #### TURNO HARDCODEADO
         # turno = {
@@ -321,10 +313,9 @@ class ActionConfirmacionTurno(Action):
                 for i in range(3, cantidad_partes_nombre_bebe):
                     apellido_bebe = apellido_bebe + " " + partes_nombre_bebe[i]
 
-        ##aca se obtenia la cantidad de meses del bebe pero no se usaba nunca
         semanas_gestacion = int(tracker.get_slot("semanas_gestacion"))
-        #fecha_nacimiento = tracker.get_slot("fecha_nacimiento")
-        fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
+        #fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
+        fecha_nacimiento = tracker.get_slot("fecha_nacimiento_bebe")
         fecha_nacimiento_obj = datetime.strptime(fecha_nacimiento, '%d-%m-%Y') # convierte a datetime
         fecha_nacimiento_formateada = fecha_nacimiento_obj.strftime('%Y-%m-%d') # formatea el formato al requerido por odoo
 
@@ -361,8 +352,6 @@ class ActionConfirmacionTurno(Action):
 
         print(f"fechas disponibles: {fechas_disponibles}")                
         if fechas_disponibles:
-                dispatcher.utter_message(text=str(f"*Opción 4:* Consulta telefonica con un operador"))
-                dispatcher.utter_message(text=str(f"Ingrese el número de opción del turno que desea seleccionar: "))
                 opcion_elegida = int(next(tracker.get_latest_entity_values("opcion"),None))
                 if opcion_elegida == 4:
                     dispatcher.utter_message(text=str(f"Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
@@ -406,69 +395,9 @@ class ActionConfirmacionTurno(Action):
             id_turno_a_borrar= id_turno+1
             odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'unlink', [[id_turno_a_borrar]])
             # chequea que se haya eliminado correctamente:
-            odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=', id_turno_a_borrar]]])
+            # odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=', id_turno_a_borrar]]])
 
-        opcion_seleccionada = float(next(tracker.get_latest_entity_values("opcion"),None))
-        ruta_completa = os.path.join(os.path.dirname(__file__), 'EjemplosTurnos.txt')
-        with open(ruta_completa, 'r') as archivo:
-            lista_opciones = archivo.readlines()
-            lista_opciones = [linea.strip() for linea in lista_opciones]
-        cantidad_opciones = len(lista_opciones)
-        if (opcion_seleccionada == cantidad_opciones+1): #esto es porque está la opción adicional de derivación a un operador
-            dispatcher.utter_message(text=str("Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
-        elif(opcion_seleccionada > 0) and (opcion_seleccionada <= cantidad_opciones):
-            datos_turno = lista_opciones[int(opcion_seleccionada)-1].split(" - ")
-            fecha, horario, doctor, honorarios = datos_turno
-            posicion = fecha.rfind('d')-1
-            fecha_sin_anio = fecha[:posicion]
-            nombre_bebe = tracker.get_slot("nombre_b")
-            dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_bebe} para el día {fecha_sin_anio} con dr {doctor} a las {horario}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal. Los honorarios son {honorarios}\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina https://youtu.be/wrfBgNa0shY"))
-        else:
-            dispatcher.utter_message(text=str("Perdón, ingresaste una opción inválida, por favor intentalo devuelta y asegurate que el número de opción esté en el listado"))
-        return []
         
-        # nombre_completo_bebe = tracker.get_slot("nombre_b")
-
-        # #### conexiones
-        # uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
-        # print (uid)
-        # odoo = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/object')
-        # print (odoo)
-
-        # if fechas_disponibles:
-        #     dispatcher.utter_message(text=str(f"Ingrese el número de opción del turno que desea seleccionar: "))
-        #     opcion_elegida = int(next(tracker.get_latest_entity_values("opcion"),None))
-        #     if 1 <= opcion_elegida <= len(fechas_disponibles):
-        #         turno_seleccionado = fechas_disponibles[opcion_elegida - 1]
-        #         id_seleccionado, inicio_seleccionado, fin_seleccionado, medico_id_seleccionado = turno_seleccionado
-        #         print(f"Ha seleccionado la opción {opcion_elegida}: ID: {id_seleccionado} - Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}")
-        #         # Sumar 3 horas a las fechas seleccionadas
-        #         inicio_seleccionado = (datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
-        #         fin_seleccionado = (datetime.strptime(fin_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
-        #         #### CREO UN DICCIONARIO DE TURNO ---------------------------------------------------------------------------------------
-        #         turno = {
-        #             "partner_id": id_paciente, #id de paciente recien agregado
-        #             "motivo": '1 VEZ',
-        #             "technician_id": medico_id_seleccionado,
-        #             "appointment_date": inicio_seleccionado, # la hora real es 3 horas menos
-        #             "appointment_stop_date": fin_seleccionado, # la hora real es 3 horas menos
-        #         }
-        #         #### CREO EL TURNO EN ODOO ----------------------------------------------------------------------------------------------
-        #         id_turno = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'create', [turno])
-        #         # print(id_turno)
-        #         dia= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%A')
-        #         numero_dia= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%d')
-        #         mes= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%B')
-        #         hora = datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
-        #         if medico_id_seleccionado == 32:
-        #             dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con la Neurocirujana Pediátrica la Dra. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
-        #         else:
-        #             dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con el Neurocirujano Pediátrico el Dr. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
-        #     else:
-        #         print("Opción no válida. Por favor, ingrese un número de opción válido.")
-        # else:
-        #     print("No hay turnos disponibles en el rango de la próxima semana.")
-
 class ActionGuardarNombre(Action):
 
      def name(self) -> Text:

@@ -66,6 +66,11 @@ slots:
     initial_value: false
     mappings:
     - type: custom
+  fecha_nacimiento_bebe:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: fecha_nacimiento_bebe
   opcion:
     type: float
     mappings:

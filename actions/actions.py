@@ -265,10 +265,14 @@ class ActionMostrarTurnos(Action):
         #     "appointment_stop_date": '2023-11-14 13:00:00', # la hora real es 3 horas menos
         # }
 
+        # #### Busco el id del paciente con el nombre = x
+        # id_paciente_a_buscar= odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['lastname', '=','crocci']]])
+        # print(f"el id del paciente X es: {id_paciente_a_buscar}")
+        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [id_paciente_a_buscar]))
         # #### Borrar paciente
-        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'unlink', [[id]])
-        # # check if the deleted record is still in the database
-        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id]]])
+        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'unlink', [[id_paciente_a_buscar]])
+        # # chequeo si el registro que acabo de eliminar existe
+        # odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['id', '=', id_paciente_a_buscar]]])
 
         # #### busco el id del paciente con el nombre = x
         # id_paciente= odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[['firstname', '=','ximena']]])
@@ -313,41 +317,47 @@ class ActionConfirmacionTurno(Action):
                 for i in range(3, cantidad_partes_nombre_bebe):
                     apellido_bebe = apellido_bebe + " " + partes_nombre_bebe[i]
 
-        semanas_gestacion = int(tracker.get_slot("semanas_gestacion"))
+        semanas_gestacion = str(tracker.get_slot("semanas_gestacion"))
         #fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
         fecha_nacimiento = tracker.get_slot("fecha_nacimiento_bebe")
         fecha_nacimiento_obj = datetime.strptime(fecha_nacimiento, '%d-%m-%Y') # convierte a datetime
         fecha_nacimiento_formateada = fecha_nacimiento_obj.strftime('%Y-%m-%d') # formatea el formato al requerido por odoo
 
         #### creo un diccionario de paciente depediendo de la semana de gestacion (rnt o rnpt)
-        if (semanas_gestacion >= 38) and (semanas_gestacion <= 41):
+        if (semanas_gestacion >= '38') and (semanas_gestacion <= '41'):
             paciente = {
-                "nombre_madre": nombre_completo_mama,
-                "firstname": nombre_bebe,
-                "lastname": apellido_bebe,
-                # "rnt": semanas_gestacion,
+                "paciente": True,
+                "nombre_madre": nombre_completo_mama.title(),
+                "firstname": nombre_bebe.title(),
+                "lastname": apellido_bebe.title(),
+                "rnt": semanas_gestacion,
+                "rnpt_otro": False,
                 "birthdate_date": fecha_nacimiento_formateada
             }
-        elif (semanas_gestacion < 38) and (semanas_gestacion >= 35):
+        elif (semanas_gestacion < '38') and (semanas_gestacion >= '35'):
             paciente = {
-                "nombre_madre": nombre_completo_mama,
-                "firstname": nombre_bebe,
-                "lastname": apellido_bebe,
-                # "rnpt": semanas_gestacion,
+                "paciente": True,
+                "nombre_madre": nombre_completo_mama.title(),
+                "firstname": nombre_bebe.title(),
+                "lastname": apellido_bebe.title(),
+                "rnpt": semanas_gestacion,
+                "rnpt_otro": False,
                 "birthdate_date": fecha_nacimiento_formateada
             }
-        elif (semanas_gestacion < 35) or (semanas_gestacion > 41):
+        elif (semanas_gestacion < '35') or (semanas_gestacion > '41'):
             paciente = {
-                "nombre_madre": nombre_completo_mama,
-                "firstname": nombre_bebe,
-                "lastname": apellido_bebe,
-                # "rnpt": 'Otro',
+                "paciente": True,
+                "nombre_madre": nombre_completo_mama.title(),
+                "firstname": nombre_bebe.title(),
+                "lastname": apellido_bebe.title(),
+                "rnpt": 'otro',
+                "rnpt_otro": True,
                 "birthdate_date": fecha_nacimiento_formateada
             }
 
         #### creo el paciente en odoo
         id_paciente = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
-        # print(id_paciente)
+        print("id paciente recien agregado: {id_paciente}")
         # dispatcher.utter_message(text=str("creado paciente"))
 
         print(f"fechas disponibles: {fechas_disponibles}")                
@@ -382,9 +392,9 @@ class ActionConfirmacionTurno(Action):
                     mes= datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%B')
                     hora = datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
                     if medico_id_seleccionado == 32:
-                        dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con la Neurocirujana Pediátrica la Dra. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
+                        dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe.title()} para el día {dia.title()} {numero_dia} de {mes.title()} a las {hora}hs con la Neurocirujana Pediátrica la Dra. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
                     else:
-                        dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe} para el día {dia} {numero_dia} de {mes} a las {hora}hs con el Neurocirujano Pediátrico el Dr. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
+                        dispatcher.utter_message(text=str(f"Bien,👌 ya queda agendada la visita de {nombre_completo_bebe.title()} para el día {dia.title()} {numero_dia} de {mes.title()} a las {hora}hs con el Neurocirujano Pediátrico el Dr. {medicos[medico_id_seleccionado]['nombre']}, en nuestros consultorios ubicados en 📍Av. Callao 384, Piso 4º 9, Capital Federal.\nhttps://g.page/PlagiocefaliaArgentina?share\nEl equipo de Plagiocefalia Argentina\nhttps://youtu.be/wrfBgNa0shY")) 
                 else:
                     print("Opción no válida. Por favor, ingrese un número de opción válido.")
         else:

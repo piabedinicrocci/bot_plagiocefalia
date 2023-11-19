@@ -180,6 +180,17 @@ class ActionMostrarTurnos(Action):
         else:
             return "Mes invalido"
 
+     def obtenerPosicionTurnoMedico(self, turnos_disponibles, medico_id, debe_ser_maniana, debe_ser_tarde):
+        posicion_turno_parcial = -1
+        for i, turno in enumerate(turnos_disponibles):
+            fecha_inicio = turno['appointment_date']
+            medico_id_actual = int(turno['technician_id'][0]) if turno['technician_id'] else None
+            if medico_id_actual is not None and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
+                return i
+            elif medico_id_actual is not None and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and posicion_turno_parcial == -1:
+                posicion_turno_parcial = i
+        return posicion_turno_parcial
+
      def run(self, dispatcher: CollectingDispatcher,
              tracker: Tracker,
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
@@ -219,7 +230,6 @@ class ActionMostrarTurnos(Action):
         )
 
         opcion = 1
-        medicos_procesados = [] 
         medico_ids = [31,32,33]
 
         global fechas_disponibles
@@ -229,6 +239,35 @@ class ActionMostrarTurnos(Action):
                 db, uid, pwd, 'appointment.appointment', 'read', [turno_ids],
                 {'fields': ['id', 'appointment_date', 'appointment_stop_date', 'technician_id']}
             )
+            global debe_ser_maniana
+            global debe_ser_tarde
+            debe_ser_maniana = True
+            debe_ser_tarde = True
+
+            for medico_id in medico_ids:
+                posicion_turno_medico = self.obtenerPosicionTurnoMedico(turnos_disponibles, medico_id, debe_ser_maniana, debe_ser_tarde)
+                print(posicion_turno_medico)
+                if (posicion_turno_medico > -1):
+                    turno = list(turnos_disponibles)[posicion_turno_medico]
+                    fecha_inicio = turno['appointment_date']
+                    fecha_fin = turno['appointment_stop_date']
+                    fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
+                    dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
+                    numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
+                    mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
+                    hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+                    dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
+                    opcion += 1
+                    if datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'):
+                        debe_ser_maniana = True
+                        debe_ser_tarde = False
+                    else:
+                        debe_ser_maniana = False
+                        debe_ser_tarde = True
+
+            dispatcher.utter_message(text=str(f"*Opción {opcion}:* Consulta telefonica con un operador"))
+
+            """"
             for i, turno in enumerate(turnos_disponibles):
                 fecha_inicio = turno['appointment_date']
                 fecha_fin = turno['appointment_stop_date']
@@ -244,7 +283,7 @@ class ActionMostrarTurnos(Action):
                     if medico_id in medicos_procesados:
                         continue
                     # Verificar si el turno está dentro del horario del médico
-                    if medico_id is not None and medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin']:
+                    if medico_id is not None and medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
                         fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
                         dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
                         numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
@@ -253,8 +292,14 @@ class ActionMostrarTurnos(Action):
                         dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
                         opcion += 1 
                         medicos_procesados.append(medico_id)
+                        if datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'):
+                            debe_ser_maniana = True
+                            debe_ser_tarde = False
+                        else:
+                            debe_ser_maniana = False
+                            debe_ser_tarde = True
                         break  # Romper el bucle interno después de agregar un turno para el médico
-            dispatcher.utter_message(text=str(f"*Opción 4:* Consulta telefonica con un operador"))
+            """
 
         #### TURNO HARDCODEADO
         # turno = {

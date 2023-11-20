@@ -121,7 +121,7 @@ class ActionTieneObraSocial(Action):
              domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
          rta= tracker.latest_message['intent']['name']
          if str(rta) == 'afirmacion':
-            message="Genial! Te pedimos que nos adjuntes foto del carnet de la misma"
+            message="Genial! Te pedimos que nos adjuntes foto del carnet de la misma y posteriormente foto de frente y dorso de tu DNI"
             dispatcher.utter_message(text=str(message))
             return [SlotSet("tiene_os",True)]
          elif str(rta) == 'negacion':

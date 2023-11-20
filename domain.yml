@@ -100,8 +100,6 @@ responses:
   - text: '¡Perfecto! Para poder derivarte al sector de presupuesto y coordinación de turno para la toma de molde, vamos a solicitarle los siguientes datos:'
   utter_pregunta_os:
   - text: Entiendo! Tienes obra social?
-  utter_foto_dni:
-  - text: Y ahora te pido que nos adjuntes foto de frente y dorso de tu DNI
   utter_fin:
   - text: Hasta luego {nombre}!​👋​ Cualquier consulta estamos para ayudarte
   utter_desconocido:

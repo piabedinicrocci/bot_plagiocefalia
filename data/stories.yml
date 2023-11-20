@@ -52,7 +52,6 @@ stories:
   - action: action_tiene_os
   - slot_was_set:
     - tiene_os: false
-  # adjunta foto dni
   # derive el chat al Usuario de Luz Hortal
 
 # ---------------------------------------------------
@@ -94,9 +93,8 @@ stories:
   - action: utter_pregunta_os
   - intent: afirmacion
   - action: action_tiene_os
-  # adjunta foto os
-  - action: utter_foto_dni
-  # adjunta foto dni
+  - slot_was_set:
+    - tiene_os: true
   # derive el chat al Usuario de Luz Hortal
 
 # ---------------------------------------------------
@@ -200,7 +198,8 @@ stories:
     - fecha_nacimiento_bebe: 8-2-2022
   - slot_was_set:
     - fecha_nacimiento_bebe: 8-2-2022
-  - action: action_tiene_os
+  - action: 
+  
 
 - story: interactive_story_1
   steps:

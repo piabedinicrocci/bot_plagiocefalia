@@ -17,6 +17,7 @@ import os
 import xmlrpc.client as xmlrpclib
 import locale
 from datetime import datetime, timedelta
+import time
 
 db='odoo.plagiocefalia.com.ar'
 user='bot'
@@ -75,7 +76,6 @@ class ActionEndConversation(Action):
 
         # Devuelve un evento de acción de finalización para finalizar la conversación
         return [ActionExecutionRejected()]
-    
 
 class ActionEdadBebe(Action):
 
@@ -453,6 +453,21 @@ class ActionConfirmacionTurno(Action):
             # odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[['id', '=', id_turno_a_borrar]]])
 
         
+class ActionFotos(Action):
+
+     def name(self) -> Text:
+         return "action_fotos"
+
+     def run(self, dispatcher: CollectingDispatcher,
+             tracker: Tracker,
+             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        #  print("Antes de sleep:", time.time())
+        #  time.sleep(10)
+        #  print("Después de sleep:", time.time())
+         message="¡Perfecto! Para poder derivarte al sector de presupuesto y coordinación de turno para la toma de molde, vamos a solicitarle los siguientes datos:"
+         dispatcher.utter_message(text=str(message))
+         return []
+
 class ActionGuardarNombre(Action):
 
      def name(self) -> Text:
@@ -473,6 +488,7 @@ class ActionGuardarNombre(Action):
             return [SlotSet("nombre", nombre_sin_comillas)]
         elif (ultima_accion_completada == 'action_visito_especialista'):
             dispatcher.utter_message(text=str("Bien! Ahora adjunta foto de la misma. Aguardamos la foto de cada uno de los documentos emitidos😊"))
+            time.sleep(10)
             return [SlotSet("nombre_n", nombre_sin_comillas)]
         elif (ultima_accion_completada == 'utter_pregunta_nombre_bebe'):
             dispatcher.utter_message(text=str(f"Qué lindo nombre! ¿Y con cuántas semanas de gestación nació {nombre_sin_comillas}? "))

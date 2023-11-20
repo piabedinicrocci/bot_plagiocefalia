@@ -26,7 +26,7 @@ stories:
   - slot_was_set:
     - nombre_n: mariana molina
   # - intent: fotos
-  - action: utter_rta_fotos
+  - action: action_fotos
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
   - intent: nombre
@@ -73,7 +73,7 @@ stories:
     - nombre
   - action: action_guardar_nombre #adjunta fotos documentos
   # - intent: fotos
-  - action: utter_rta_fotos
+  - action: action_fotos
   # arranca flujo alternativo nombre bebe, gestacion, fecha nac
   - action: utter_pregunta_nombre_bebe
   - intent: nombre
@@ -179,7 +179,7 @@ stories:
   - action: action_guardar_nombre
   - slot_was_set:
     - nombre_n: joaquin gonzalez
-  - action: utter_rta_fotos
+  - action: action_fotos
   - action: utter_pregunta_nombre_bebe
   - intent: nombre
     entities:

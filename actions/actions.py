@@ -135,96 +135,135 @@ class ActionMostrarTurnos(Action):
          return "action_mostrar_turnos"
      
      def obtenerDiaEnCastellano(self, dia):
-        if dia == "Monday":
+        if dia == "Monday" or dia == "monday":
             return "Lunes"
-        elif dia == "Tuesday":
+        elif dia == "Tuesday" or dia == "tuesday":
             return "Martes"
-        elif dia == "Wednesday":
-            return "Miercoles"
-        elif dia == "Thursday":
+        elif dia == "Wednesday" or dia == "wednesday":
+            return "Miércoles"
+        elif dia == "Thursday" or dia == "thursday":
             return "Jueves"
-        elif dia == "Friday":
+        elif dia == "Friday" or dia == "friday":
             return "Viernes"
-        elif dia == "Saturday":
-            return "Sabado"
-        elif dia == "Sunday":
+        elif dia == "Saturday" or dia == "saturday":
+            return "Sábado"
+        elif dia == "Sunday" or dia == "sunday":
             return "Domingo"
         else:
             return "Dia invalido"
         
      def obtenerMesEnCastellano(self, mes):
-        if mes == "January":
+        if mes == "January" or mes == "january":
             return "Enero"
-        elif mes == "February":
+        elif mes == "February" or mes == "february":
             return "Febrero"
-        elif mes == "March":
+        elif mes == "March" or mes == "march":
             return "Marzo"
-        elif mes == "April":
+        elif mes == "April" or mes == "april":
             return "Abril"
-        elif mes == "May":
+        elif mes == "May" or mes == "may":
             return "Mayo"
-        elif mes == "June":
+        elif mes == "June" or mes == "june":
             return "Junio"
-        elif mes == "July":
+        elif mes == "July" or mes == "july":
             return "Julio"
-        elif mes == "August":
+        elif mes == "August" or mes == "august":
             return "Agosto"
-        elif mes == "September":
+        elif mes == "September" or mes == "september":
             return "Septiembre"
-        elif mes == "October":
+        elif mes == "October" or mes == "october":
             return "Octubre"
-        elif mes == "November":
+        elif mes == "November" or mes == "november":
             return "Noviembre"
-        elif mes == "December":
+        elif mes == "December" or mes == "december":
             return "Diciembre"
         else:
             return "Mes invalido"
-        
+    
      def obtenerDiaEnIngles(self, dia):
-        if dia == "lunes":
+        if dia == "Lunes" or dia == "lunes":
             return "Monday"
-        elif dia == "martes":
+        elif dia == "Martes" or dia == "martes":
             return "Tuesday"
-        elif dia == "miercoles":
+        elif dia == "Miercoles" or dia == "miercoles":
             return "Wednesday"
-        elif dia == "jueves":
+        elif dia == "Jueves" or dia == "jueves":
             return "Thursday"
-        elif dia == "viernes":
+        elif dia == "Viernes" or dia == "viernes":
             return "Friday"
-        elif dia == "sabado":
+        elif dia == "Sabado" or dia == "sabado":
             return "Saturday"
-        elif dia == "domingo":
+        elif dia == "Domingo" or dia == "domingo":
             return "Sunday"
         else:
             return "Dia invalido"
+    
+     def obtenerMesEnIngles(self, mes):
+        if mes == "Enero" or mes == "enero":
+            return "January"
+        elif mes == "Febrero" or mes == "febrero":
+            return "February"
+        elif mes == "Marzo" or mes == "marzo":
+            return "March"
+        elif mes == "Abril" or mes == "abril":
+            return "April"
+        elif mes == "Mayo" or mes == "mayo":
+            return "May"
+        elif mes == "Junio" or mes == "junio":
+            return "June"
+        elif mes == "Julio" or mes == "julio":
+            return "July"
+        elif mes == "Agosto" or mes == "agosto":
+            return "August"
+        elif mes == "Septiembre" or mes == "septiembre":
+            return "September"
+        elif mes == "Octubre" or mes == "octubre":
+            return "October"
+        elif mes == "Noviembre" or mes == "noviembre":
+            return "November"
+        elif mes == "Diciembre" or mes == "diciembre":
+            return "December"
+        else:
+            return "Mes invalido"
+        
+     def esTurnoDeMediaHora(self, horario_inicio, horario_fin):
+        print(horario_inicio)
+        print(horario_fin)
+        hora_dt1 = datetime.strptime(horario_inicio, "%H:%M:%S")
+        hora_dt2 = datetime.strptime(horario_fin, "%H:%M:%S")
+        diferencia = abs(hora_dt2 - hora_dt1)
+        if diferencia == timedelta(minutes=30):
+            print("verdadero")
+            return True
+        else:
+            print("falso")
+            return False
 
      def obtenerPosicionTurnoMedico(self, turnos_disponibles, medico_id, debe_ser_maniana, debe_ser_tarde):
         posicion_turno_parcial = -1
         for i, turno in enumerate(turnos_disponibles):
-            print(f"i: {i}")
             fecha_inicio = turno['appointment_date']
-            print(f"fecha inicio de obtenerposturnomedico: {datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')}")
+            fecha_fin = turno['appointment_stop_date']
             medico_id_actual = int(turno['technician_id'][0]) if turno['technician_id'] else None
-            if (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == 'lunes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == 'martes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == 'miercoles') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == 'jueves') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == 'viernes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == 'sabado') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == 'domingo'):
-                if medico_id_actual is not None and (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0])) or (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')) == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
+            if (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'lunes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'martes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'miercoles') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'jueves') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'viernes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'sabado') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'domingo'):
+                print("espaniol")
+                if medico_id_actual is not None and (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')) == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
                     return i
-                elif medico_id_actual is not None and (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0])) or (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')) == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and posicion_turno_parcial == -1:
+                elif medico_id_actual is not None and (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')) == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and posicion_turno_parcial == -1:
                     posicion_turno_parcial = i
-                print(f"condicion 2: { ((datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0])) or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0]) }")
-                print(f"CONDICION 2 PARTE 1: {datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')}") 
-                print(f"CONDICION 2 PARTE 2: {medicos[medico_id]['dias'][0]}")
-                print("entro IF")
             else:
-                if medico_id_actual is not None and ((datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0])) or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
+                print("ingles")
+                print(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A'))
+                print(medicos[medico_id]['dias'][0])
+                print(medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'])
+                print(datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'))
+                print(debe_ser_tarde)
+                datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S')
+                print(debe_ser_maniana)
+                if medico_id_actual is not None and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
                     return i
-                elif medico_id_actual is not None and ((datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0])) or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and posicion_turno_parcial == -1:
+                elif medico_id_actual is not None and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and posicion_turno_parcial == -1:
                     posicion_turno_parcial = i
-                print(f"condicion 2: { ((datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0])) or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A') == medicos[medico_id]['dias'][0]) }")
-                print(f"CONDICION 2 PARTE 1: {datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')}") 
-                print(f"CONDICION 2 PARTE 2: {medicos[medico_id]['dias'][0]}")
-                print("entro ELSE")
-
-                print(f"entro else")
         return posicion_turno_parcial
 
      def run(self, dispatcher: CollectingDispatcher,
@@ -234,6 +273,7 @@ class ActionMostrarTurnos(Action):
 
         fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
         [SlotSet("fecha_nacimiento_bebe", fecha_nacimiento)]
+        print(f"fecha nac en mostrar turnos: {fecha_nacimiento}")
 
         #### conexiones
         uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
@@ -281,18 +321,26 @@ class ActionMostrarTurnos(Action):
 
             for medico_id in medico_ids:
                 posicion_turno_medico = self.obtenerPosicionTurnoMedico(turnos_disponibles, medico_id, debe_ser_maniana, debe_ser_tarde)
-                print(f"pos turno medico de {medico_id}: {posicion_turno_medico}")
+                print(posicion_turno_medico)
                 if (posicion_turno_medico > -1):
                     turno = list(turnos_disponibles)[posicion_turno_medico]
                     fecha_inicio = turno['appointment_date']
-                    print(f"fecha inicio de run del for: {datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')}")
                     fecha_fin = turno['appointment_stop_date']
                     fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
                     dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
                     numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
                     mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
                     hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
-                    dispatcher.utter_message(text=str(f"Opción {opcion}: Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
+                    if (dia.lower() == 'monday') or (dia.lower() == 'tuesday') or (dia.lower() == 'wednesday') or (dia.lower() == 'thursday') or (dia.lower() == 'friday') or (dia.lower() == 'saturday') or (dia.lower() == 'sunday'):
+                        if (mes.lower() == 'january') or (mes.lower() == 'february') or (mes.lower() == 'march') or (mes.lower() == 'april') or (mes.lower() == 'may') or (mes.lower() == 'june') or (mes.lower() == 'july') or (mes.lower() == 'august') or (mes.lower() == 'september') or (mes.lower() == 'october') or (mes.lower() == 'november') or (mes.lower() == 'december'):
+                            dispatcher.utter_message(text=str(f"Opción {opcion}: Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
+                        else:
+                            dispatcher.utter_message(text=str(f"Opción {opcion}: Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {mes.capitalize()} a las {hora}hs"))
+                    else:
+                        if (mes.lower() == 'january') or (mes.lower() == 'february') or (mes.lower() == 'march') or (mes.lower() == 'april') or (mes.lower() == 'may') or (mes.lower() == 'june') or (mes.lower() == 'july') or (mes.lower() == 'august') or (mes.lower() == 'september') or (mes.lower() == 'october') or (mes.lower() == 'november') or (mes.lower() == 'december'):
+                            dispatcher.utter_message(text=str(f"Opción {opcion}: Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia.capitalize()} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
+                        else:
+                            dispatcher.utter_message(text=str(f"Opción {opcion}: Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia.capitalize()} {numero_dia} de {mes.capitalize()} a las {hora}hs"))
                     opcion += 1
                     if datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'):
                         debe_ser_maniana = True
@@ -301,7 +349,7 @@ class ActionMostrarTurnos(Action):
                         debe_ser_maniana = False
                         debe_ser_tarde = True
 
-            dispatcher.utter_message(text=str(f"Opción {opcion}: Consulta telefonica con un operador"))
+            dispatcher.utter_message(text=str(f"Opción {opcion}: Consulta telefónica con un operador"))
 
             """"
             for i, turno in enumerate(turnos_disponibles):
@@ -438,7 +486,7 @@ class ActionConfirmacionTurno(Action):
 
         #### creo el paciente en odoo
         id_paciente = odoo.execute_kw(db, uid, pwd, 'res.partner', 'create', [paciente])
-        print(f"id paciente recien agregado: {id_paciente}")
+        print("id paciente recien agregado: {id_paciente}")
         # dispatcher.utter_message(text=str("creado paciente"))
 
         print(f"fechas disponibles: {fechas_disponibles}")                

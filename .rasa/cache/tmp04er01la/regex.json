@@ -1,0 +1,10 @@
+[
+  {
+    "name": "fecha_nacimiento_bebe",
+    "pattern": "(\\d{1,2})/(\\d{1,2})/(\\d{4})"
+  },
+  {
+    "name": "nombre",
+    "pattern": "^\"[A-ZÁÉÍÓÚÑa-záéíóúñ][a-zA-ZÁÉÍÓÚÑáéíóúñ ]*\"[A-ZÁÉÍÓÚÑa-záéíóúñ]*$"
+  }
+]

@@ -23,7 +23,7 @@ db='odoo.plagiocefalia.com.ar'
 user='plagiobot'
 pwd='plagio2023+-*'
 server='odoo.plagiocefalia.com.ar'
-port='5131'   
+port='8069'   
 
 # Definir información de los médicos
 medicos = {
@@ -33,19 +33,6 @@ medicos = {
 }
 
 fechas_disponibles = []
-
-# class ActionHelloWorld(Action):
-#
-#     def name(self) -> Text:
-#         return "action_hello_world"
-#
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#
-#         dispatcher.utter_message(text="Hello World!")
-#
-#         return []
 
 class ActionVisitoEspecialista(Action):
 
@@ -225,67 +212,42 @@ class ActionMostrarTurnos(Action):
             return "December"
         else:
             return "Mes invalido"
-        
-     def esTurnoDeMediaHora(self, horario_inicio, horario_fin):
-        print(horario_inicio)
-        print(horario_fin)
-        hora_dt1 = datetime.strptime(horario_inicio, "%H:%M:%S")
-        hora_dt2 = datetime.strptime(horario_fin, "%H:%M:%S")
-        diferencia = abs(hora_dt2 - hora_dt1)
-        if diferencia == timedelta(minutes=30):
-            print("verdadero")
-            return True
-        else:
-            print("falso")
-            return False
-    
-     def round_up_to_30_minutes(self, dt):
-        delta = timedelta(minutes=30)
-        return datetime.min + ((dt - datetime.min) // delta + 1) * delta
      
      def noSeCruzaConOtroTurno(self, fecha_inicio, fecha_fin, turnos_ocupados):
         for i, turno in enumerate(turnos_ocupados):
             print(i)
-            fecha_inicio_turno = datetime.strptime(turno['appointment_date'], '%Y-%m-%d %H:%M:%S')
-            fecha_fin_turno = datetime.strptime(turno['appointment_stop_date'], '%Y-%m-%d %H:%M:%S')
+            fecha_inicio_turno = datetime.strptime(turno['appointment_date'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=3)
+            fecha_fin_turno = datetime.strptime(turno['appointment_stop_date'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=3)
+            print (fecha_inicio)
+            print(fecha_inicio_turno)
+            print(fecha_fin)
+            print(fecha_fin_turno)
             if fecha_inicio < fecha_fin_turno and fecha_fin > fecha_inicio_turno:
                 return False
         return True
 
      def obtenerTurnosDisponibles(self, fecha_inicio, fecha_fin, turnos_ocupados, medico_id, turnos_disponibles):
-        print(turnos_ocupados)
         while fecha_inicio < fecha_fin:
             final_actual = fecha_inicio + timedelta(minutes=30)
-            if final_actual <= fecha_fin and self.noSeCruzaConOtroTurno(fecha_inicio, fecha_fin, turnos_ocupados):
-                print("cumplio")
+            if final_actual <= fecha_fin and self.noSeCruzaConOtroTurno(fecha_inicio, final_actual, turnos_ocupados):
                 opcion_turno = {
                     "technician_id": medico_id,
                     "appointment_date": fecha_inicio.strftime('%Y-%m-%d %H:%M:%S'),
                     "appointment_stop_date": final_actual.strftime('%Y-%m-%d %H:%M:%S'),
                 }
                 turnos_disponibles.append(opcion_turno)
-            fecha_inicio += timedelta(minutes=30)  
+            fecha_inicio += timedelta(minutes=15)  
 
      def obtenerPosicionTurnoMedico(self, turnos_disponibles, medico_id, debe_ser_maniana, debe_ser_tarde):
         posicion_turno_parcial = -1
         for i, turno in enumerate(turnos_disponibles):
             fecha_inicio = turno['appointment_date']
-            #medico_id_actual = int(turno['technician_id'][0]) if turno['technician_id'] else None
             if (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'lunes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'martes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'miercoles') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'jueves') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'viernes') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'sabado') or (datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == 'domingo'):
-                print("espaniol")
                 if (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')) == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
                     return i
                 elif (self.obtenerDiaEnIngles(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')) == medicos[medico_id]['dias'][0]) and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and posicion_turno_parcial == -1:
                     posicion_turno_parcial = i
             else:
-                print("ingles")
-                print(datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A'))
-                print(medicos[medico_id]['dias'][0])
-                print(medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'])
-                print(datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'))
-                print(debe_ser_tarde)
-                datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S')
-                print(debe_ser_maniana)
                 if datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
                     return i
                 elif datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and posicion_turno_parcial == -1:
@@ -299,7 +261,6 @@ class ActionMostrarTurnos(Action):
 
         fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
         [SlotSet("fecha_nacimiento_bebe", fecha_nacimiento)]
-        print(f"fecha nac en mostrar turnos: {fecha_nacimiento}")
 
         #### conexiones
         uid = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/common').authenticate(db, user, pwd, {})
@@ -307,23 +268,14 @@ class ActionMostrarTurnos(Action):
         odoo = xmlrpclib.ServerProxy('http://'+server+':'+port+'/xmlrpc/2/object')
         print (odoo)
 
-        #### consulta pacientes
-        # ids = odoo.execute_kw(db, uid, pwd, 'res.partner', 'search', [[]], {'limit': 1})
-        # print(odoo.execute_kw(db, uid, pwd, 'res.partner', 'read', [ids]))
-
-        #### consulta turnos agenda
-        # id_turnos = odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'search', [[]], {'limit': 1})
-        # print(odoo.execute_kw(db, uid, pwd, 'appointment.appointment', 'read', [id_turnos]))
-
         today = datetime.now()
         # Calcular la fecha de inicio y fin de la próxima semana
         start_date = today
-        end_date = today + timedelta(days=7)
+        end_date = (today + timedelta(days=7)).replace(hour=0, minute=0, second=0, microsecond=0)
         # Consultar los turnos disponibles en el rango de una semana
-        # CORREGIR CONSULTA: ESTA DEVOLVIENDO LOS ESPACIOS OCUPADOS CON TURNOS EN VEZ DE LOS ESPACIOS LIBRES
 
         opcion = 1
-        medico_ids = [31,32,33]
+        medico_ids = [33,31,32]
 
         global fechas_disponibles
 
@@ -333,100 +285,76 @@ class ActionMostrarTurnos(Action):
         debe_ser_tarde = True
 
         for medico_id in medico_ids:
+            turno_ids = []
             turno_ids = odoo.execute_kw(
                 db, uid, pwd, 'appointment.appointment', 'search',
                 [[
-                    ('appointment_date', '>=', '2023-12-01 09:00:00'),
-                    ('appointment_stop_date', '<', '2023-12-01 16:30:00'),
-                    #('appointment_date', '>=', start_date.strftime('%Y-%m-%d %H:%M:%S')),
-                    #('appointment_date', '<', end_date.strftime('%Y-%m-%d %H:%M:%S')),
+                    ('appointment_date', '>=', start_date.strftime('%Y-%m-%d %H:%M:%S')),
+                    ('appointment_date', '<', end_date.strftime('%Y-%m-%d %H:%M:%S')),
                     ('technician_id', '=', int(medico_id))
                 ]],
                 {'order': 'technician_id ASC, appointment_date ASC'}
             )
-            if turno_ids:
-                turnos_ocupados = odoo.execute_kw(
-                    db, uid, pwd, 'appointment.appointment', 'read', [turno_ids],
-                    {'fields': ['id', 'appointment_date', 'appointment_stop_date', 'technician_id']}
-                )
-                if turnos_ocupados and len(turnos_ocupados) > 0:
-                    turnos_disponibles = []
-                    print(turnos_ocupados)
-                    primer_turno_medico = list(turnos_ocupados)[0]
-                    horario_inicio = datetime.strptime(medicos[medico_id]['inicio'], '%H:%M:%S').time()
-                    fecha_horario_inicio = datetime.strptime(primer_turno_medico['appointment_date'], '%Y-%m-%d %H:%M:%S')
-                    fecha_hora_completa_inicio = datetime.combine(fecha_horario_inicio.date(), horario_inicio)
-                    print(f'Fecha y Hora completa inicio: {fecha_hora_completa_inicio}')
-                    horario_final = datetime.strptime(medicos[medico_id]['fin'], '%H:%M:%S').time()
-                    fecha_horario_final = datetime.strptime(primer_turno_medico['appointment_stop_date'], '%Y-%m-%d %H:%M:%S')
-                    fecha_hora_completa_final = datetime.combine(fecha_horario_final.date(), horario_final)
-                    print(f'Fecha y Hora completa final: {fecha_hora_completa_final}')
-                    self.obtenerTurnosDisponibles(fecha_hora_completa_inicio, fecha_hora_completa_final, turnos_ocupados, medico_id, turnos_disponibles)
-                    print(turnos_disponibles)
-                    posicion_turno_medico = self.obtenerPosicionTurnoMedico(turnos_disponibles, medico_id, debe_ser_maniana, debe_ser_tarde)
-                    print(posicion_turno_medico)
-                    if (posicion_turno_medico > -1):
-                        turno = list(turnos_disponibles)[posicion_turno_medico]
-                        fecha_inicio = turno['appointment_date']
-                        fecha_fin = turno['appointment_stop_date']
-                        fechas_disponibles.append((fecha_inicio, fecha_fin, medico_id))
-                        dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
-                        numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
-                        mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
-                        hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
-                        if (dia.lower() == 'monday') or (dia.lower() == 'tuesday') or (dia.lower() == 'wednesday') or (dia.lower() == 'thursday') or (dia.lower() == 'friday') or (dia.lower() == 'saturday') or (dia.lower() == 'sunday'):
-                            if (mes.lower() == 'january') or (mes.lower() == 'february') or (mes.lower() == 'march') or (mes.lower() == 'april') or (mes.lower() == 'may') or (mes.lower() == 'june') or (mes.lower() == 'july') or (mes.lower() == 'august') or (mes.lower() == 'september') or (mes.lower() == 'october') or (mes.lower() == 'november') or (mes.lower() == 'december'):
-                                dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
-                            else:
-                                dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {mes.capitalize()} a las {hora}hs"))
-                        else:
-                            if (mes.lower() == 'january') or (mes.lower() == 'february') or (mes.lower() == 'march') or (mes.lower() == 'april') or (mes.lower() == 'may') or (mes.lower() == 'june') or (mes.lower() == 'july') or (mes.lower() == 'august') or (mes.lower() == 'september') or (mes.lower() == 'october') or (mes.lower() == 'november') or (mes.lower() == 'december'):
-                                dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia.capitalize()} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
-                            else:
-                                dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia.capitalize()} {numero_dia} de {mes.capitalize()} a las {hora}hs"))
-                        opcion += 1
-                        if datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'):
-                            debe_ser_maniana = True
-                            debe_ser_tarde = False
-                        else:
-                            debe_ser_maniana = False
-                            debe_ser_tarde = True
-
-        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Consulta telefonica con un operador"))
-
-        """"
-        for i, turno in enumerate(turnos_disponibles):
-            fecha_inicio = turno['appointment_date']
-            fecha_fin = turno['appointment_stop_date']
-            medico_id = int(turno['technician_id'][0]) if turno['technician_id'] else None
-
-            print(medico_id)
-            print(medico_ids)
-            print(medicos_procesados)
-
-            # Iterar sobre los médicos asociados a un turno
-            for medico_id in medico_ids:
-                # Verificar si el médico ya ha sido procesado
-                if medico_id in medicos_procesados:
-                    continue
-                # Verificar si el turno está dentro del horario del médico
-                if medico_id is not None and medico_id in medicos and datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A').lower() == medicos[medico_id]['dias'][0].lower() and medicos[medico_id]['inicio'] <= fecha_inicio[-8:] <= medicos[medico_id]['fin'] and ((datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_tarde == True) or (datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') <= datetime.strptime('12:00:00', '%H:%M:%S') and debe_ser_maniana == True)):
-                    fechas_disponibles.append((turno['id'], fecha_inicio, fecha_fin, medico_id))
-                    dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
-                    numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
-                    mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
-                    hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
-                    dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
-                    opcion += 1 
-                    medicos_procesados.append(medico_id)
-                    if datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'):
-                        debe_ser_maniana = True
-                        debe_ser_tarde = False
+            turnos_ocupados = []
+            turnos_ocupados = odoo.execute_kw(
+                db, uid, pwd, 'appointment.appointment', 'read', [turno_ids],
+                {'fields': ['id', 'appointment_date', 'appointment_stop_date', 'technician_id']}
+            )
+            turnos_disponibles = []
+            print(turnos_ocupados)
+            dia = medicos[medico_id]['dias'][0]
+            if (dia == "Monday"):
+                proxima_fecha_asociada = (today + timedelta(days=((7 - today.weekday()) % 7))).replace(hour=0, minute=0, second=0, microsecond=0)
+            elif (dia == "Tuesday"):
+                proxima_fecha_asociada = (today + timedelta(days=((1 - today.weekday()) % 7))).replace(hour=0, minute=0, second=0, microsecond=0)
+            elif (dia == "Wednesday"):
+                proxima_fecha_asociada = (today + timedelta(days=((2 - today.weekday()) % 7))).replace(hour=0, minute=0, second=0, microsecond=0)
+            elif (dia == "Thursday"):
+                proxima_fecha_asociada = (today + timedelta(days=((3 - today.weekday()) % 7))).replace(hour=0, minute=0, second=0, microsecond=0)
+            elif (dia == "Friday"):
+                proxima_fecha_asociada = (today + timedelta(days=((4 - today.weekday()) % 7))).replace(hour=0, minute=0, second=0, microsecond=0)
+            elif (dia == "Saturday"):
+                proxima_fecha_asociada = (today + timedelta(days=((5 - today.weekday()) % 7))).replace(hour=0, minute=0, second=0, microsecond=0)
+            elif (dia == "Sunday"):
+                proxima_fecha_asociada = (today + timedelta(days=((6 - today.weekday()) % 7))).replace(hour=0, minute=0, second=0, microsecond=0)
+            horario_inicio = datetime.strptime(medicos[medico_id]['inicio'], '%H:%M:%S').time()
+            fecha_hora_completa_inicio = datetime.combine(proxima_fecha_asociada.date(), horario_inicio)
+            print(f'Fecha y Hora completa inicio: {fecha_hora_completa_inicio}')
+            horario_final = datetime.strptime(medicos[medico_id]['fin'], '%H:%M:%S').time()
+            fecha_hora_completa_final = datetime.combine(proxima_fecha_asociada.date(), horario_final)
+            print(f'Fecha y Hora completa final: {fecha_hora_completa_final}')
+            self.obtenerTurnosDisponibles(fecha_hora_completa_inicio, fecha_hora_completa_final, turnos_ocupados, medico_id, turnos_disponibles)
+            print(turnos_disponibles)
+            posicion_turno_medico = self.obtenerPosicionTurnoMedico(turnos_disponibles, medico_id, debe_ser_maniana, debe_ser_tarde)
+            print(posicion_turno_medico)
+            if (posicion_turno_medico > -1):
+                turno = list(turnos_disponibles)[posicion_turno_medico]
+                fecha_inicio = turno['appointment_date']
+                fecha_fin = turno['appointment_stop_date']
+                fechas_disponibles.append((fecha_inicio, fecha_fin, medico_id))
+                dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%A')
+                numero_dia= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%d')
+                mes= datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%B')
+                hora = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+                if (dia.lower() == 'monday') or (dia.lower() == 'tuesday') or (dia.lower() == 'wednesday') or (dia.lower() == 'thursday') or (dia.lower() == 'friday') or (dia.lower() == 'saturday') or (dia.lower() == 'sunday'):
+                    if (mes.lower() == 'january') or (mes.lower() == 'february') or (mes.lower() == 'march') or (mes.lower() == 'april') or (mes.lower() == 'may') or (mes.lower() == 'june') or (mes.lower() == 'july') or (mes.lower() == 'august') or (mes.lower() == 'september') or (mes.lower() == 'october') or (mes.lower() == 'november') or (mes.lower() == 'december'):
+                        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
                     else:
-                        debe_ser_maniana = False
-                        debe_ser_tarde = True
-                    break  # Romper el bucle interno después de agregar un turno para el médico
-        """
+                        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {self.obtenerDiaEnCastellano(dia)} {numero_dia} de {mes.capitalize()} a las {hora}hs"))
+                else:
+                    if (mes.lower() == 'january') or (mes.lower() == 'february') or (mes.lower() == 'march') or (mes.lower() == 'april') or (mes.lower() == 'may') or (mes.lower() == 'june') or (mes.lower() == 'july') or (mes.lower() == 'august') or (mes.lower() == 'september') or (mes.lower() == 'october') or (mes.lower() == 'november') or (mes.lower() == 'december'):
+                        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia.capitalize()} {numero_dia} de {self.obtenerMesEnCastellano(mes)} a las {hora}hs"))
+                    else:
+                        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Médico: {medicos[medico_id]['nombre']} - Fecha y Hora: {dia.capitalize()} {numero_dia} de {mes.capitalize()} a las {hora}hs"))
+                opcion += 1
+                if datetime.strptime(fecha_inicio[-8:], '%H:%M:%S') > datetime.strptime('12:00:00', '%H:%M:%S'):
+                    debe_ser_maniana = True
+                    debe_ser_tarde = False
+                else:
+                    debe_ser_maniana = False
+                    debe_ser_tarde = True
+
+        dispatcher.utter_message(text=str(f"*Opción {opcion}:* Consulta telefónica con un operador"))
 
         #### TURNO HARDCODEADO
         # turno = {
@@ -539,8 +467,8 @@ class ActionConfirmacionTurno(Action):
                     dispatcher.utter_message(text=str(f"Ya te derivé al sector correspondiente en el transcurso del día se estarán contactando con vos!☺️"))
                 elif 1 <= opcion_elegida <= len(fechas_disponibles):
                     turno_seleccionado = fechas_disponibles[opcion_elegida - 1]
-                    id_seleccionado, inicio_seleccionado, fin_seleccionado, medico_id_seleccionado = turno_seleccionado
-                    print(f"Ha seleccionado la opción {opcion_elegida}: ID: {id_seleccionado} - Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}")
+                    inicio_seleccionado, fin_seleccionado, medico_id_seleccionado = turno_seleccionado
+                    print(f"Ha seleccionado la opción {opcion_elegida}: Médico: {medicos[medico_id_seleccionado]['nombre']} - Fecha y Hora: {inicio_seleccionado} - {fin_seleccionado}")
                     # Sumar 3 horas a las fechas seleccionadas
                     inicio_seleccionado = (datetime.strptime(inicio_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
                     fin_seleccionado = (datetime.strptime(fin_seleccionado, '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')

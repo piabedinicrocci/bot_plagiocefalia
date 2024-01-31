@@ -420,6 +420,7 @@ class ActionConfirmacionTurno(Action):
         semanas_gestacion = str(tracker.get_slot("semanas_gestacion"))
         #fecha_nacimiento= next(tracker.get_latest_entity_values("fecha_nacimiento_bebe"),None)
         fecha_nacimiento = tracker.get_slot("fecha_nacimiento_bebe")
+        fecha_nacimiento = fecha_nacimiento.replace('/', '-')
         fecha_nacimiento_obj = datetime.strptime(fecha_nacimiento, '%d-%m-%Y') # convierte a datetime
         fecha_nacimiento_formateada = fecha_nacimiento_obj.strftime('%Y-%m-%d') # formatea el formato al requerido por odoo
 

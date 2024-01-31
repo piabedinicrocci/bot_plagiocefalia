@@ -96,7 +96,7 @@ responses:
   utter_pregunta_nombre_bebe:
   - text: 'El nombre completo de tu bebe (Ingresa su nombre completo entre comillas dobles): '
   utter_pregunta_fecha_nacimiento:
-  - text: ¿Cuál es la fecha de nacimiento de {nombre_b}? Utiliza el formato dd-mm-aaaa
+  - text: ¿Cuál es la fecha de nacimiento de {nombre_b}? Utiliza el formato dd/mm/aaaa
   # utter_rta_fotos:
   # - text: '¡Perfecto! Para poder derivarte al sector de presupuesto y coordinación de turno para la toma de molde, vamos a solicitarle los siguientes datos:'
   utter_pregunta_os:
